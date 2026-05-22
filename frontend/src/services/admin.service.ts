@@ -71,3 +71,70 @@ export const getCloudinarySignature = (token: string, folder = "lg-travels") =>
     `/admin/cloudinary/signature?folder=${encodeURIComponent(folder)}`,
     token,
   );
+
+/**
+ * Upload one image to Cloudinary via a signed request.
+ * Returns the hosted URL + public ID. The API secret never reaches the browser.
+ */
+export async function uploadImage(
+  token: string,
+  file: File,
+  folder = "lg-travels/packages",
+): Promise<{ url: string; publicId: string }> {
+  const sig = await getCloudinarySignature(token, folder);
+  if (!sig.cloudName || !sig.apiKey) {
+    throw new Error("Cloudinary is not configured on the server.");
+  }
+  const form = new FormData();
+  form.append("file", file);
+  form.append("api_key", sig.apiKey);
+  form.append("timestamp", String(sig.timestamp));
+  form.append("signature", sig.signature);
+  form.append("folder", sig.folder);
+
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${sig.cloudName}/image/upload`, {
+    method: "POST",
+    body: form,
+  });
+  if (!res.ok) {
+    const msg = await res.json().catch(() => null);
+    throw new Error(msg?.error?.message ?? `Upload failed (${res.status})`);
+  }
+  const data = (await res.json()) as { secure_url: string; public_id: string };
+  return { url: data.secure_url, publicId: data.public_id };
+}
+
+export interface ItineraryDayInput {
+  dayNumber: number;
+  title: string;
+  description?: string;
+  stay?: string;
+}
+
+export interface NewPackageInput {
+  title: string;
+  slug?: string;
+  summary?: string;
+  description?: string;
+  location?: string;
+  heroImage?: string;
+  gallery?: string[];
+  durationDays: number;
+  durationNights: number;
+  price: number;
+  oldPrice?: number;
+  currency?: string;
+  groupSize?: string;
+  category?: string;
+  highlights?: string[];
+  inclusions?: string[];
+  exclusions?: string[];
+  badge?: string;
+  isFeatured?: boolean;
+  destinationSlug?: string;
+  itinerary?: ItineraryDayInput[];
+}
+
+/** Create a package (admin-only). Returns the created package with its slug. */
+export const adminCreatePackage = (token: string, payload: NewPackageInput) =>
+  apiPost<{ id: string; slug: string; title: string }>("/packages", payload, token);

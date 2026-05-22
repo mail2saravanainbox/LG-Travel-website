@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import Image from "next/image";
 import { Check, Copy, Loader2, UploadCloud } from "lucide-react";
-import { getCloudinarySignature } from "@/services/admin.service";
+import { uploadImage } from "@/services/admin.service";
 import { useAdmin } from "@/store/admin";
 
 interface Uploaded {
@@ -30,27 +30,8 @@ export function ImageUploader({ folder = "lg-travels" }: { folder?: string }) {
     setError(null);
     try {
       for (const file of Array.from(files)) {
-        const sig = await getCloudinarySignature(token, folder);
-        if (!sig.cloudName || !sig.apiKey) {
-          throw new Error("Cloudinary is not configured on the server.");
-        }
-        const form = new FormData();
-        form.append("file", file);
-        form.append("api_key", sig.apiKey);
-        form.append("timestamp", String(sig.timestamp));
-        form.append("signature", sig.signature);
-        form.append("folder", sig.folder);
-
-        const res = await fetch(
-          `https://api.cloudinary.com/v1_1/${sig.cloudName}/image/upload`,
-          { method: "POST", body: form },
-        );
-        if (!res.ok) {
-          const msg = await res.json().catch(() => null);
-          throw new Error(msg?.error?.message ?? `Upload failed (${res.status})`);
-        }
-        const data = (await res.json()) as { secure_url: string; public_id: string };
-        setItems((prev) => [{ url: data.secure_url, publicId: data.public_id }, ...prev]);
+        const uploaded = await uploadImage(token, file, folder);
+        setItems((prev) => [uploaded, ...prev]);
       }
     } catch (e) {
       setError((e as Error).message);

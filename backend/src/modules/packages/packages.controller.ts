@@ -1,5 +1,7 @@
-import { Controller, Get, Param, Query } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Query, UseGuards } from "@nestjs/common";
 import { PackagesService } from "./packages.service";
+import { CreatePackageDto } from "./create-package.dto";
+import { AdminGuard } from "../admin/admin.module";
 
 @Controller("packages")
 export class PackagesController {
@@ -12,6 +14,13 @@ export class PackagesController {
     @Query("sort") sort?: string,
   ) {
     return this.service.findAll({ category, featured, sort });
+  }
+
+  // Admin-only: create a new package (with optional itinerary).
+  @UseGuards(AdminGuard)
+  @Post()
+  create(@Body() dto: CreatePackageDto) {
+    return this.service.create(dto);
   }
 
   @Get(":slug")

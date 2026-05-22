@@ -21,9 +21,10 @@ import {
 } from "@/services/admin.service";
 import { useAdmin } from "@/store/admin";
 import { ImageUploader } from "@/components/admin/image-uploader";
+import { PackageForm } from "@/components/admin/package-form";
 import { cn, formatCurrency, formatDate } from "@/lib/utils";
 
-type Tab = "bookings" | "leads" | "media";
+type Tab = "bookings" | "leads" | "packages" | "media";
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -114,7 +115,7 @@ export default function AdminDashboard() {
 
         {/* Tabs */}
         <div className="mt-8 flex gap-2">
-          {(["bookings", "leads", "media"] as Tab[]).map((t) => (
+          {(["bookings", "leads", "packages", "media"] as Tab[]).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
@@ -125,13 +126,21 @@ export default function AdminDashboard() {
                   : "border border-navy-700/15 text-navy-700 hover:border-navy-700/40",
               )}
             >
-              {t === "media" ? "media" : `${t} (${t === "bookings" ? bookings.length : leads.length})`}
+              {t === "bookings"
+                ? `bookings (${bookings.length})`
+                : t === "leads"
+                  ? `leads (${leads.length})`
+                  : t}
             </button>
           ))}
         </div>
 
         {/* Panels */}
-        {tab === "media" ? (
+        {tab === "packages" ? (
+          <div className="mt-4">
+            <PackageForm />
+          </div>
+        ) : tab === "media" ? (
           <div className="mt-4">
             <ImageUploader />
           </div>
