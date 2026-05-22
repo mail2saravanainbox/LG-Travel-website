@@ -1,0 +1,173 @@
+"use client";
+
+import { motion, type Variants } from "framer-motion";
+import { Compass, Plane, ShieldCheck, Star } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { EASE_LUX } from "@/lib/motion";
+import { SearchWidget } from "./search-widget";
+
+const POSTER =
+  "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=2000&q=80";
+
+// Hot-linked cinematic drone footage (swap for Cloudinary in production).
+const VIDEO_SOURCES = [
+  "https://videos.pexels.com/video-files/2169880/2169880-uhd_2560_1440_30fps.mp4",
+  "https://videos.pexels.com/video-files/1526909/1526909-uhd_2560_1440_24fps.mp4",
+];
+
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, delay: i * 0.12, ease: EASE_LUX },
+  }),
+};
+
+export function Hero() {
+  return (
+    <section className="relative flex min-h-[100svh] items-center overflow-hidden">
+      {/* Cinematic video background with poster fallback */}
+      <video
+        className="absolute inset-0 h-full w-full object-cover"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        poster={POSTER}
+      >
+        {VIDEO_SOURCES.map((src) => (
+          <source key={src} src={src} type="video/mp4" />
+        ))}
+      </video>
+
+      {/* Gradient overlays for readability */}
+      <div className="hero-overlay absolute inset-0" aria-hidden />
+      <div
+        className="absolute inset-0 bg-gradient-to-r from-navy-950/70 via-navy-950/20 to-transparent"
+        aria-hidden
+      />
+
+      {/* Floating 3D-style objects */}
+      <FloatingObjects />
+
+      <div className="container-lux relative z-10 grid w-full items-center gap-12 pt-28 pb-16 lg:grid-cols-12">
+        <div className="lg:col-span-7">
+          <motion.span
+            custom={0}
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="glass inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-medium text-white"
+          >
+            <Star className="h-3.5 w-3.5 fill-gold-400 text-gold-400" />
+            Rated 4.9/5 by 2,300+ luxury travellers
+          </motion.span>
+
+          <motion.h1
+            custom={1}
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="mt-6 max-w-3xl text-balance font-display text-5xl font-bold leading-[1.02] text-white sm:text-6xl lg:text-7xl"
+          >
+            The world,{" "}
+            <span className="text-gold-gradient">curated</span> for the way you travel.
+          </motion.h1>
+
+          <motion.p
+            custom={2}
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="mt-6 max-w-xl text-balance text-lg leading-relaxed text-white/80"
+          >
+            Cinematic, bespoke journeys to the planet&apos;s most extraordinary places —
+            designed end-to-end by experts, delivered with concierge-grade care.
+          </motion.p>
+
+          <motion.div
+            custom={3}
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="mt-8 flex flex-wrap items-center gap-3"
+          >
+            <Button href="/packages" variant="gold" size="lg">
+              Explore Packages
+            </Button>
+            <Button href="/destinations" variant="glass" size="lg">
+              <Compass className="h-5 w-5" />
+              Browse Destinations
+            </Button>
+          </motion.div>
+
+          <motion.div
+            custom={4}
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-white/70"
+          >
+            <span className="flex items-center gap-2">
+              <ShieldCheck className="h-4 w-4 text-gold-400" /> Secure booking
+            </span>
+            <span className="flex items-center gap-2">
+              <Plane className="h-4 w-4 text-gold-400" /> 120+ destinations
+            </span>
+            <span className="flex items-center gap-2">
+              <Star className="h-4 w-4 text-gold-400" /> 24/7 concierge
+            </span>
+          </motion.div>
+        </div>
+
+        {/* Floating stat card */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9, y: 30 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="hidden lg:col-span-5 lg:block"
+        >
+          <div className="ml-auto w-full max-w-sm space-y-4">
+            <div className="glass animate-float-slow rounded-3xl p-5 text-white shadow-glow">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-white/70">Trending now</span>
+                <span className="rounded-full bg-gold-400 px-2.5 py-0.5 text-xs font-semibold text-navy-900">
+                  -14%
+                </span>
+              </div>
+              <p className="mt-2 font-display text-xl font-semibold">Maldives Overwater Escape</p>
+              <p className="text-sm text-white/60">6 days · Private villa · Seaplane</p>
+              <div className="mt-4 flex items-end justify-between">
+                <span className="text-2xl font-bold">₹3,48,600</span>
+                <span className="flex items-center gap-1 text-sm text-gold-300">
+                  <Star className="h-4 w-4 fill-gold-300" /> 4.9
+                </span>
+              </div>
+            </div>
+            <div className="glass animate-float-slower ml-8 rounded-2xl p-4 text-white shadow-glow">
+              <p className="text-sm text-white/70">Your designer is online</p>
+              <p className="font-display text-base font-semibold">Plan a bespoke trip in minutes</p>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Search widget anchored to bottom */}
+      <div className="container-lux absolute inset-x-0 bottom-6 z-20 hidden md:block">
+        <SearchWidget />
+      </div>
+    </section>
+  );
+}
+
+function FloatingObjects() {
+  return (
+    <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden>
+      <div className="animate-float-slow absolute right-[12%] top-[22%] h-40 w-40 rounded-full bg-gold-400/20 blur-2xl" />
+      <div className="animate-float-slower absolute left-[6%] bottom-[28%] h-52 w-52 rounded-full bg-navy-400/25 blur-3xl" />
+      <Plane className="animate-float-slow absolute right-[20%] top-[34%] h-10 w-10 -rotate-12 text-white/30" />
+    </div>
+  );
+}

@@ -1,0 +1,156 @@
+import type { Destination } from "@/types";
+
+const img = (id: string, w = 1600) =>
+  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=80`;
+
+export const destinations: Destination[] = [
+  {
+    id: "d1",
+    slug: "maldives",
+    name: "Maldives",
+    country: "Maldives",
+    continent: "Asia",
+    tagline: "Overwater villas & glass-clear lagoons",
+    description:
+      "A constellation of private-island resorts scattered across the Indian Ocean. Wake above turquoise water, dine beneath the stars and dive into reefs alive with colour. The Maldives is the definition of barefoot luxury.",
+    heroImage: img("photo-1514282401047-d79a71a590e8"),
+    gallery: [
+      img("photo-1573843981267-be1999ff37cd"),
+      img("photo-1505881502353-a1986add3762"),
+      img("photo-1540202404-a2f29016b523"),
+      img("photo-1439066615861-d1af74d74000"),
+    ],
+    startingPrice: 199200,
+    currency: "INR",
+    rating: 4.9,
+    reviewCount: 412,
+    bestSeason: "Nov – Apr",
+    highlights: ["Overwater villas", "Private reef dives", "Sandbank dining", "Seaplane transfers"],
+    featured: true,
+  },
+  {
+    id: "d2",
+    slug: "switzerland",
+    name: "Swiss Alps",
+    country: "Switzerland",
+    continent: "Europe",
+    tagline: "Alpine peaks & glacier railways",
+    description:
+      "Snow-dusted summits, emerald lakes and the world's most scenic rail journeys. From Zermatt to the Jungfrau, Switzerland delivers cinematic mountain grandeur with impeccable comfort.",
+    heroImage: img("photo-1531366936337-7c912a4589a7"),
+    gallery: [
+      img("photo-1527668752968-14dc70a27c95"),
+      img("photo-1530122037265-a5f1f91d3b99"),
+      img("photo-1465056836041-7f43ac27dcb5"),
+      img("photo-1508780709619-79562169bc64"),
+    ],
+    startingPrice: 257300,
+    currency: "INR",
+    rating: 4.8,
+    reviewCount: 287,
+    bestSeason: "Dec – Mar · Jun – Sep",
+    highlights: ["Glacier Express", "Matterhorn views", "Lakeside spas", "Alpine fine dining"],
+    featured: true,
+  },
+  {
+    id: "d3",
+    slug: "dubai",
+    name: "Dubai",
+    country: "United Arab Emirates",
+    continent: "Middle East",
+    tagline: "Desert glamour & skyline spectacle",
+    description:
+      "Where futuristic skylines meet golden dunes. Dubai blends ultra-modern luxury — soaring towers, private yachts, Michelin dining — with timeless Arabian desert escapes.",
+    heroImage: img("photo-1512453979798-5ea266f8880c"),
+    gallery: [
+      img("photo-1518684079-3c830dcef090"),
+      img("photo-1546412414-e1885259563a"),
+      img("photo-1559599189-fe84dea4eb79"),
+      img("photo-1582672060674-bc2bd808a8f5"),
+    ],
+    startingPrice: 149400,
+    currency: "INR",
+    rating: 4.7,
+    reviewCount: 530,
+    bestSeason: "Oct – Apr",
+    highlights: ["Desert safari", "Burj Khalifa suites", "Yacht marina", "Gold-souk tours"],
+    featured: true,
+  },
+  {
+    id: "d4",
+    slug: "santorini",
+    name: "Santorini",
+    country: "Greece",
+    continent: "Europe",
+    tagline: "Caldera sunsets & whitewashed cliffs",
+    description:
+      "The Aegean's most romantic island. Cliffside infinity pools, cobalt domes and sunsets that set the sky alight over the volcanic caldera.",
+    heroImage: img("photo-1570077188670-e3a8d69ac5ff"),
+    gallery: [
+      img("photo-1533105079780-92b9be482077"),
+      img("photo-1601581875309-fafbf2d3ed3a"),
+      img("photo-1469796466635-455ede028aca"),
+      img("photo-1504512485720-7d83a16ee930"),
+    ],
+    startingPrice: 174300,
+    currency: "INR",
+    rating: 4.9,
+    reviewCount: 368,
+    bestSeason: "May – Oct",
+    highlights: ["Caldera suites", "Catamaran cruise", "Wine tasting", "Sunset at Oia"],
+    featured: true,
+  },
+  {
+    id: "d5",
+    slug: "bali",
+    name: "Bali",
+    country: "Indonesia",
+    continent: "Asia",
+    tagline: "Jungle villas & rice-terrace serenity",
+    description:
+      "Spiritual, lush and endlessly photogenic. Bali pairs cliff-edge infinity pools with emerald rice terraces, temple ceremonies and world-class wellness retreats.",
+    heroImage: img("photo-1537953773345-d172ccf13cf1"),
+    gallery: [
+      img("photo-1518548419970-58e3b4079ab2"),
+      img("photo-1555400038-63f5ba517a47"),
+      img("photo-1604999565976-8913ad2ddb7c"),
+      img("photo-1542897644-e04ba6c0c1d4"),
+    ],
+    startingPrice: 124500,
+    currency: "INR",
+    rating: 4.8,
+    reviewCount: 624,
+    bestSeason: "Apr – Oct",
+    highlights: ["Cliffside villas", "Ubud retreats", "Temple tours", "Wellness spas"],
+    featured: false,
+  },
+  {
+    id: "d6",
+    slug: "kyoto",
+    name: "Kyoto",
+    country: "Japan",
+    continent: "Asia",
+    tagline: "Ancient temples & cherry blossoms",
+    description:
+      "Japan's cultural heart. Wander vermilion torii gates, bamboo groves and centuries-old ryokan, then dine on kaiseki crafted by master chefs.",
+    heroImage: img("photo-1493976040374-85c8e12f0c0e"),
+    gallery: [
+      img("photo-1545569341-9eb8b30979d9"),
+      img("photo-1478436127897-769e1b3f0f36"),
+      img("photo-1528360983277-13d401cdc186"),
+      img("photo-1490806843957-31f4c9a91c65"),
+    ],
+    startingPrice: 215800,
+    currency: "INR",
+    rating: 4.9,
+    reviewCount: 241,
+    bestSeason: "Mar – May · Oct – Nov",
+    highlights: ["Ryokan stays", "Tea ceremony", "Arashiyama bamboo", "Kaiseki dining"],
+    featured: false,
+  },
+];
+
+export const getDestination = (slug: string) =>
+  destinations.find((d) => d.slug === slug);
+
+export const featuredDestinations = destinations.filter((d) => d.featured);

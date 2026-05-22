@@ -1,0 +1,187 @@
+@import "tailwindcss";
+
+/* ----------------------------------------------------------------------------
+   LG Travels — Design System (Tailwind v4)
+   Brand: Midnight Travel Blue #082567 · Luxury Gold #F4B400
+---------------------------------------------------------------------------- */
+
+@theme {
+  /* Brand */
+  --color-navy-50: #eef2fb;
+  --color-navy-100: #d3ddf3;
+  --color-navy-200: #a7bbe7;
+  --color-navy-300: #6f8ed4;
+  --color-navy-400: #3f5fb0;
+  --color-navy-500: #1f3d8a;
+  --color-navy-600: #122e6e;
+  --color-navy-700: #082567; /* primary */
+  --color-navy-800: #061c4f;
+  --color-navy-900: #04123a;
+  --color-navy-950: #020a22;
+
+  --color-gold-50: #fdf8e7;
+  --color-gold-100: #fbeec0;
+  --color-gold-200: #f8df8a;
+  --color-gold-300: #f6cf52;
+  --color-gold-400: #f4b400; /* secondary */
+  --color-gold-500: #d99a00;
+  --color-gold-600: #b07a00;
+  --color-gold-700: #855b06;
+
+  /* Neutrals */
+  --color-mist: #f5f7fa;
+  --color-ink: #1a1a1a;
+
+  /* Semantic */
+  --color-background: #ffffff;
+  --color-foreground: #1a1a1a;
+
+  /* Fonts */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
+
+  /* Radii */
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
+
+  /* Shadows — soft, premium */
+  --shadow-soft: 0 10px 40px -12px rgb(8 37 103 / 0.18);
+  --shadow-lift: 0 24px 60px -20px rgb(8 37 103 / 0.28);
+  --shadow-glow: 0 0 0 1px rgb(255 255 255 / 0.12), 0 18px 50px -12px rgb(8 37 103 / 0.45);
+
+  /* Easing + motion */
+  --ease-lux: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #1a1a1a;
+}
+
+* {
+  border-color: hsl(220 20% 90%);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+::selection {
+  background: var(--color-gold-400);
+  color: var(--color-navy-900);
+}
+
+/* Custom utilities ------------------------------------------------------- */
+@utility container-lux {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+  max-width: 80rem;
+  @media (min-width: 768px) {
+    padding-inline: 2rem;
+  }
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+
+/* Glassmorphism surface */
+@utility glass {
+  background: rgb(255 255 255 / 0.08);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid rgb(255 255 255 / 0.18);
+}
+
+@utility glass-light {
+  background: rgb(255 255 255 / 0.7);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgb(255 255 255 / 0.6);
+}
+
+/* Gold gradient text */
+@utility text-gold-gradient {
+  background: linear-gradient(135deg, #f6cf52 0%, #f4b400 50%, #d99a00 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Hide scrollbar (carousels) */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Animated underline link */
+@utility link-underline {
+  position: relative;
+}
+
+/* Decorative grain/sheen for hero */
+.hero-overlay {
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgb(8 37 103 / 0) 0%, rgb(4 18 58 / 0.35) 60%, rgb(2 10 34 / 0.85) 100%),
+    linear-gradient(180deg, rgb(2 10 34 / 0.55) 0%, rgb(2 10 34 / 0.1) 35%, rgb(2 10 34 / 0.7) 100%);
+}
+
+.section-fade-top {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 8%, black 92%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, black 8%, black 92%, transparent);
+}
+
+/* Marquee for gallery */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 40s linear infinite;
+}
+
+/* Slow float for 3D-style hero objects */
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-14px) rotate(2deg); }
+}
+.animate-float-slow {
+  animation: float-slow 7s var(--ease-lux) infinite;
+}
+
+@keyframes float-slower {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-22px) rotate(-3deg); }
+}
+.animate-float-slower {
+  animation: float-slower 9s var(--ease-lux) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

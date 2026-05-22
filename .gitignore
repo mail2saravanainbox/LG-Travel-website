@@ -1,0 +1,28 @@
+# ─── Dependencies ───
+**/node_modules
+
+# ─── Build output ───
+**/dist
+**/.next
+**/out
+**/build
+*.tsbuildinfo
+
+# ─── Env / secrets (never commit) ───
+**/.env
+**/.env.*
+!**/.env.example
+
+# ─── Logs ───
+*.log
+npm-debug.log*
+
+# ─── OS / editor ───
+.DS_Store
+*.pem
+
+# ─── Vercel ───
+.vercel
+
+# ─── Claude Code local settings ───
+.claude/settings.local.json

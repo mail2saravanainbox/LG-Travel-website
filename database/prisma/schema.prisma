@@ -1,0 +1,273 @@
+// LG Travels — Prisma schema (used by the NestJS backend)
+// Generate client: npx prisma generate · Migrate: npx prisma migrate dev
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  customer
+  sales_team
+  content_manager
+  travel_manager
+  super_admin
+}
+
+enum PackageCategory {
+  Luxury
+  Honeymoon
+  Adventure
+  Family
+  Wellness
+  Cultural
+}
+
+enum BookingStatus {
+  pending
+  confirmed
+  cancelled
+  completed
+  refunded
+}
+
+enum PaymentStatus {
+  initiated
+  succeeded
+  failed
+  refunded
+}
+
+enum PaymentProvider {
+  stripe
+  razorpay
+  telr
+  manual
+}
+
+enum InquiryStatus {
+  new
+  contacted
+  qualified
+  converted
+  lost
+}
+
+enum PostStatus {
+  draft
+  published
+  archived
+}
+
+model User {
+  id            String      @id @default(uuid())
+  clerkId       String      @unique
+  email         String      @unique
+  fullName      String?
+  avatarUrl     String?
+  phone         String?
+  nationality   String?
+  role          UserRole    @default(customer)
+  loyaltyPoints Int         @default(0)
+  bookings      Booking[]
+  reviews       Review[]
+  posts         BlogPost[]
+  wishlists     Wishlist[]
+  inquiries     Inquiry[]   @relation("AssignedInquiries")
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Destination {
+  id            String     @id @default(uuid())
+  slug          String     @unique
+  name          String
+  country       String
+  continent     String
+  tagline       String?
+  description   String?
+  heroImage     String?
+  gallery       Json       @default("[]")
+  startingPrice Decimal    @default(0) @db.Decimal(10, 2)
+  currency      String     @default("USD")
+  rating        Decimal    @default(0) @db.Decimal(2, 1)
+  reviewCount   Int        @default(0)
+  bestSeason    String?
+  highlights    Json       @default("[]")
+  isFeatured    Boolean    @default(false)
+  packages      Package[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model Package {
+  id             String          @id @default(uuid())
+  slug           String          @unique
+  title          String
+  destination    Destination?    @relation(fields: [destinationId], references: [id])
+  destinationId  String?
+  location       String?
+  summary        String?
+  description    String?
+  heroImage      String?
+  gallery        Json            @default("[]")
+  durationDays   Int
+  durationNights Int
+  price          Decimal         @db.Decimal(10, 2)
+  oldPrice       Decimal?        @db.Decimal(10, 2)
+  currency       String          @default("USD")
+  rating         Decimal         @default(0) @db.Decimal(2, 1)
+  reviewCount    Int             @default(0)
+  groupSize      String?
+  category       PackageCategory @default(Luxury)
+  highlights     Json            @default("[]")
+  inclusions     Json            @default("[]")
+  exclusions     Json            @default("[]")
+  badge          String?
+  isFeatured     Boolean         @default(false)
+  isActive       Boolean         @default(true)
+  itinerary      Itinerary[]
+  bookings       Booking[]
+  reviews        Review[]
+  wishlists      Wishlist[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model Itinerary {
+  id          String  @id @default(uuid())
+  package     Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  packageId   String
+  dayNumber   Int
+  title       String
+  description String?
+  stay        String?
+  meals       Json    @default("[]")
+
+  @@unique([packageId, dayNumber])
+}
+
+model Booking {
+  id         String        @id @default(uuid())
+  reference  String        @unique
+  user       User?         @relation(fields: [userId], references: [id])
+  userId     String?
+  package    Package       @relation(fields: [packageId], references: [id])
+  packageId  String
+  travelers  Int           @default(1)
+  startDate  DateTime?     @db.Date
+  leadName   String
+  leadEmail  String
+  leadPhone  String?
+  subtotal   Decimal       @db.Decimal(10, 2)
+  taxes      Decimal       @default(0) @db.Decimal(10, 2)
+  total      Decimal       @db.Decimal(10, 2)
+  currency   String        @default("USD")
+  status     BookingStatus @default(pending)
+  notes      String?
+  payments   Payment[]
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+}
+
+model Payment {
+  id          String          @id @default(uuid())
+  booking     Booking         @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  bookingId   String
+  provider    PaymentProvider @default(stripe)
+  providerRef String?
+  amount      Decimal         @db.Decimal(10, 2)
+  currency    String          @default("USD")
+  status      PaymentStatus   @default(initiated)
+  rawResponse Json?
+  createdAt   DateTime        @default(now())
+}
+
+model Review {
+  id          String   @id @default(uuid())
+  package     Package? @relation(fields: [packageId], references: [id])
+  packageId   String?
+  user        User?    @relation(fields: [userId], references: [id])
+  userId      String?
+  rating      Int
+  quote       String
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+model Testimonial {
+  id         String   @id @default(uuid())
+  name       String
+  location   String?
+  avatarUrl  String?
+  rating     Int
+  quote      String
+  trip       String?
+  isFeatured Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+model BlogPost {
+  id          String     @id @default(uuid())
+  slug        String     @unique
+  title       String
+  excerpt     String?
+  content     String?
+  coverImage  String?
+  author      User?      @relation(fields: [authorId], references: [id])
+  authorId    String?
+  category    String?
+  readingTime Int?
+  tags        Json       @default("[]")
+  status      PostStatus @default(draft)
+  publishedAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Inquiry {
+  id          String        @id @default(uuid())
+  name        String
+  email       String
+  phone       String?
+  destination String?
+  budget      String?
+  message     String?
+  status      InquiryStatus @default(new)
+  assignedTo  User?         @relation("AssignedInquiries", fields: [assignedId], references: [id])
+  assignedId  String?
+  createdAt   DateTime      @default(now())
+}
+
+model Wishlist {
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  package   Package  @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  packageId String
+  createdAt DateTime @default(now())
+
+  @@id([userId, packageId])
+}
+
+model Banner {
+  id        String   @id @default(uuid())
+  title     String?
+  subtitle  String?
+  imageUrl  String?
+  ctaLabel  String?
+  ctaHref   String?
+  position  String   @default("hero")
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Setting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
