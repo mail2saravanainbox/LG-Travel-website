@@ -1,6 +1,15 @@
 import { BadgeDollarSign, Headset, ShieldCheck, Sparkles } from "lucide-react";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { Reveal, RevealGroup } from "@/components/shared/reveal";
+import { Button } from "@/components/ui/button";
+
+// Cinematic stock footage (verified Pexels CDN; swap for Cloudinary in production).
+const SHOWCASE_POSTER =
+  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2000&q=80";
+const SHOWCASE_VIDEOS = [
+  "https://videos.pexels.com/video-files/3214448/3214448-uhd_2560_1440_25fps.mp4",
+  "https://videos.pexels.com/video-files/1739010/1739010-hd_1920_1080_30fps.mp4",
+];
 
 const features = [
   {
@@ -27,7 +36,7 @@ const features = [
 
 export function WhyChooseUs() {
   return (
-    <section className="bg-mist py-20 md:py-28">
+    <section id="why-lg-travels" className="bg-mist py-20 md:py-28">
       <div className="container-lux">
         <SectionHeading
           eyebrow="Why LG Travels"
@@ -48,6 +57,49 @@ export function WhyChooseUs() {
             </Reveal>
           ))}
         </RevealGroup>
+
+        {/* Cinematic showcase band */}
+        <Reveal className="mt-16">
+          <div className="group relative overflow-hidden rounded-[2rem] shadow-lift">
+            <video
+              className="h-[52vh] min-h-[340px] w-full object-cover transition-transform duration-[1.2s] group-hover:scale-[1.03]"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              poster={SHOWCASE_POSTER}
+            >
+              {SHOWCASE_VIDEOS.map((src) => (
+                <source key={src} src={src} type="video/mp4" />
+              ))}
+            </video>
+
+            {/* Premium gradient overlays */}
+            <div className="hero-overlay absolute inset-0" aria-hidden />
+            <div
+              className="absolute inset-0 bg-gradient-to-t from-navy-950/85 via-navy-950/25 to-navy-950/30"
+              aria-hidden
+            />
+
+            {/* Overlaid copy */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
+              <span className="glass inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-medium uppercase tracking-[0.2em] text-gold-300">
+                A glimpse of what awaits
+              </span>
+              <h3 className="mt-5 max-w-3xl text-balance font-display text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">
+                Every journey, cinematic from the very first moment
+              </h3>
+              <p className="mt-4 max-w-xl text-balance text-base text-white/80 sm:text-lg">
+                From private villas to glacier railways — we choreograph each detail so all
+                that&apos;s left for you is to arrive and be amazed.
+              </p>
+              <Button href="/packages" variant="gold" size="lg" className="mt-7">
+                Explore Packages
+              </Button>
+            </div>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
