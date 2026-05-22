@@ -52,7 +52,7 @@ export function Hero() {
       {/* Floating 3D-style objects */}
       <FloatingObjects />
 
-      <div className="container-lux relative z-10 grid w-full items-center gap-12 pt-28 pb-16 lg:grid-cols-12">
+      <div className="container-lux relative z-10 grid w-full items-center gap-12 pt-28 pb-16 md:pb-52 lg:grid-cols-12">
         <div className="lg:col-span-7">
           <motion.span
             custom={0}
