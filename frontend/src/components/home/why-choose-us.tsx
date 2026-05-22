@@ -1,15 +1,12 @@
+import Image from "next/image";
 import { BadgeDollarSign, Headset, ShieldCheck, Sparkles } from "lucide-react";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { Reveal, RevealGroup } from "@/components/shared/reveal";
 
-// Cinematic India-scenery backdrop (verified Pexels CDN; Himalayan poster
-// fallback). Swap for a Cloudinary-hosted clip in production.
-const BG_POSTER =
-  "https://images.unsplash.com/photo-1605649487212-47bdab064df7?auto=format&fit=crop&w=2000&q=80";
-const BG_VIDEOS = [
-  "https://videos.pexels.com/video-files/3214448/3214448-uhd_2560_1440_25fps.mp4",
-  "https://videos.pexels.com/video-files/5752729/5752729-hd_1920_1080_30fps.mp4",
-];
+// Himalayan scenery, gently animated with a slow zoom/pan ("Ken Burns") so the
+// still image feels like cinematic footage — no external video dependency.
+const BG_IMAGE =
+  "https://images.unsplash.com/photo-1605649487212-47bdab064df7?auto=format&fit=crop&w=2400&q=80";
 
 const features = [
   {
@@ -37,21 +34,17 @@ const features = [
 export function WhyChooseUs() {
   return (
     <section id="why-lg-travels" className="relative overflow-hidden py-20 md:py-28">
-      {/* Cinematic scenery background */}
-      <video
-        className="absolute inset-0 h-full w-full object-cover"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        poster={BG_POSTER}
-        aria-hidden
-      >
-        {BG_VIDEOS.map((src) => (
-          <source key={src} src={src} type="video/mp4" />
-        ))}
-      </video>
+      {/* Cinematic scenery background — slow zoom/pan makes the still feel like film */}
+      <div className="absolute inset-0 overflow-hidden" aria-hidden>
+        <Image
+          src={BG_IMAGE}
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="animate-ken-burns object-cover"
+        />
+      </div>
 
       {/* Dark overlays keep the white cards & heading readable over the video */}
       <div className="absolute inset-0 bg-navy-950/70" aria-hidden />
