@@ -29,11 +29,19 @@ npm run build && npm start   # production check
 
 ## 2. Backend → Railway
 1. New Railway project → add **PostgreSQL** plugin (provides `DATABASE_URL`).
-2. New service from repo, root `backend/`. Start: `node dist/main.js`; build: `npm run build`.
-3. Env: `DATABASE_URL`, `CLERK_SECRET_KEY`, `CLERK_JWKS_URL`, payment keys, `CLOUDINARY_*`, `FRONTEND_URL` (CORS).
-4. Run migrations on deploy:
+2. New service from repo, root `backend/`. Build: `npm run build`; start: `npm run start:prod`
+   (Nest builds to `dist/src/main.js`, not `dist/main.js`). `postinstall` runs `prisma generate`.
+3. Env: `DATABASE_URL`, `PORT`, `FRONTEND_URL` (CORS — comma-separated origins ok).
+   Later: `CLERK_SECRET_KEY`, payment keys, `CLOUDINARY_*` once those are wired.
+4. Sync schema on deploy. There are **no migration files** (schema was built with
+   `db push`), so use a Railway pre-deploy command:
    ```bash
-   npx prisma migrate deploy
+   npx prisma db push
+   ```
+   Seed **once** (not on every deploy — the seed is not idempotent). Easiest is to
+   run it locally against the Railway DB:
+   ```bash
+   DATABASE_URL="<railway-postgres-url>" npm run db:seed
    ```
 
 ## 3. Database
