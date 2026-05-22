@@ -21,7 +21,7 @@ import {
 } from "@/services/admin.service";
 import { useAdmin } from "@/store/admin";
 import { ImageUploader } from "@/components/admin/image-uploader";
-import { PackageForm } from "@/components/admin/package-form";
+import { PackagesPanel } from "@/components/admin/packages-panel";
 import { cn, formatCurrency, formatDate } from "@/lib/utils";
 
 type Tab = "bookings" | "leads" | "packages" | "media";
@@ -138,7 +138,7 @@ export default function AdminDashboard() {
         {/* Panels */}
         {tab === "packages" ? (
           <div className="mt-4">
-            <PackageForm />
+            <PackagesPanel />
           </div>
         ) : tab === "media" ? (
           <div className="mt-4">
