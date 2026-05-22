@@ -56,3 +56,18 @@ async function authGet<T>(path: string, token: string): Promise<T> {
 export const getAdminStats = (t: string) => authGet<AdminStats>("/admin/stats", t);
 export const getAdminBookings = (t: string) => authGet<AdminBooking[]>("/admin/bookings", t);
 export const getAdminLeads = (t: string) => authGet<AdminLead[]>("/admin/inquiries", t);
+
+export interface CloudinarySignature {
+  signature: string;
+  timestamp: number;
+  folder: string;
+  apiKey: string;
+  cloudName: string;
+}
+
+/** Fetch a one-time signature for a signed direct-to-Cloudinary upload. */
+export const getCloudinarySignature = (token: string, folder = "lg-travels") =>
+  authGet<CloudinarySignature>(
+    `/admin/cloudinary/signature?folder=${encodeURIComponent(folder)}`,
+    token,
+  );

@@ -14,11 +14,14 @@ export async function apiGet<T>(path: string): Promise<T> {
   return (await res.json()) as T;
 }
 
-/** POST JSON and return the created resource. */
-export async function apiPost<T>(path: string, body: unknown): Promise<T> {
+/** POST JSON and return the created resource. Pass a Clerk token for protected routes. */
+export async function apiPost<T>(path: string, body: unknown, token?: string): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
     body: JSON.stringify(body),
     cache: "no-store",
   });

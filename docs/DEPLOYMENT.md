@@ -54,17 +54,29 @@ npm run build && npm start   # production check
   ```
 - Or apply raw SQL: `psql "$DATABASE_URL" -f database/schema.sql`.
 
-## 4. Clerk
+## 4. Clerk  ✅ wired
+Customer auth is implemented (the `/admin` panel keeps its own backend
+username/password auth and is **not** Clerk-protected).
 1. Create a Clerk application; copy publishable + secret keys.
-2. Set sign-in/up URLs to `/login` and `/register` (see `.env.example`).
-3. Add a webhook → `https://api.lgtravels.com/api/auth/webhook` for `user.created`, `user.updated`.
-4. Wrap the frontend root layout in `<ClerkProvider>` and add `proxy.ts`
-   (Next 16 renamed `middleware` → `proxy`) to protect `/dashboard` and `/admin`.
+2. **Frontend env** (Vercel): `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`,
+   `CLERK_SECRET_KEY`, and the `NEXT_PUBLIC_CLERK_SIGN_IN/UP_URL` +
+   `..._FALLBACK_REDIRECT_URL` vars (see `frontend/.env.example`).
+3. **Backend env** (Railway): `CLERK_SECRET_KEY` — the NestJS `ClerkAuthGuard`
+   verifies session JWTs on `POST /api/bookings`.
+4. Already in code: `<ClerkProvider>` in the root layout, `src/proxy.ts`
+   (Next 16's renamed middleware) protecting `/dashboard` and `/checkout`,
+   `<SignIn>`/`<SignUp>` on `/login` and `/register`, and `<UserButton>` in the
+   navbar + dashboard. The checkout sends the Clerk token with the booking.
 
-## 5. Cloudinary
-- Create an unsigned upload preset for client uploads, signed for admin.
-- Replace demo Unsplash/Pexels URLs in `frontend/src/data/*` and the hero
-  `VIDEO_SOURCES` with Cloudinary delivery URLs.
+## 5. Cloudinary  ✅ wired
+- **Frontend env**: `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`. Use `cld()` /
+  `cloudinaryLoader` from `src/lib/cloudinary.ts`; `res.cloudinary.com` is already
+  allowed in `next.config.ts`. Helpers pass non-Cloudinary URLs through untouched,
+  so existing Unsplash/Pexels media keeps working until migrated.
+- **Backend env**: `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`,
+  `CLOUDINARY_API_SECRET`. The admin panel's **Media** tab uploads directly to
+  Cloudinary using a short-lived signature from `GET /api/admin/cloudinary/signature`
+  (signed uploads — the API secret never reaches the browser).
 
 ## 6. Payments
 - **Stripe** (global), **Razorpay** (India), **Telr** (UAE/KSA). The

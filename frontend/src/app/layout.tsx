@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Sora } from "next/font/google";
+import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import { SITE } from "@/constants/site";
 
@@ -65,12 +66,23 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      data-scroll-behavior="smooth"
-      className={`${inter.variable} ${sora.variable} h-full antialiased`}
+    <ClerkProvider
+      appearance={{
+        variables: {
+          colorPrimary: "#082567",
+          colorText: "#082567",
+          borderRadius: "0.75rem",
+          fontFamily: "var(--font-inter)",
+        },
+      }}
     >
-      <body className="min-h-full flex flex-col bg-white text-ink">{children}</body>
-    </html>
+      <html
+        lang="en"
+        data-scroll-behavior="smooth"
+        className={`${inter.variable} ${sora.variable} h-full antialiased`}
+      >
+        <body className="min-h-full flex flex-col bg-white text-ink">{children}</body>
+      </html>
+    </ClerkProvider>
   );
 }

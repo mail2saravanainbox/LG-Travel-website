@@ -17,7 +17,10 @@ export interface BookingResult {
   status: string;
 }
 
-/** Create a booking on the API. Returns the booking with its reference. */
-export function createBooking(input: BookingInput) {
-  return apiPost<BookingResult>("/bookings", input);
+/**
+ * Create a booking on the API. Returns the booking with its reference.
+ * `token` is a Clerk session token — the endpoint requires a signed-in user.
+ */
+export function createBooking(input: BookingInput, token?: string) {
+  return apiPost<BookingResult>("/bookings", input, token);
 }

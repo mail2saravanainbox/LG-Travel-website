@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
 import { CreditCard, Lock, ShieldCheck } from "lucide-react";
 import { useBooking } from "@/store/booking";
 import { createBooking } from "@/services/bookings.service";
@@ -13,6 +14,7 @@ import { formatCurrency } from "@/lib/utils";
 
 export default function CheckoutPage() {
   const router = useRouter();
+  const { getToken } = useAuth();
   const { draft, total, reset } = useBooking();
   const [processing, setProcessing] = useState(false);
 
@@ -28,14 +30,19 @@ export default function CheckoutPage() {
     const fd = new FormData(e.currentTarget);
     try {
       // Creates a real booking via the API (payment gateway is a placeholder).
-      const booking = await createBooking({
-        packageSlug: draft.packageSlug ?? "",
-        travelers: draft.travelers ?? 1,
-        startDate: draft.startDate || undefined,
-        leadName: String(fd.get("leadName") ?? ""),
-        leadEmail: String(fd.get("leadEmail") ?? ""),
-        leadPhone: String(fd.get("leadPhone") ?? "") || undefined,
-      });
+      // The endpoint requires a signed-in user; /checkout is gated by proxy.ts.
+      const token = (await getToken()) ?? undefined;
+      const booking = await createBooking(
+        {
+          packageSlug: draft.packageSlug ?? "",
+          travelers: draft.travelers ?? 1,
+          startDate: draft.startDate || undefined,
+          leadName: String(fd.get("leadName") ?? ""),
+          leadEmail: String(fd.get("leadEmail") ?? ""),
+          leadPhone: String(fd.get("leadPhone") ?? "") || undefined,
+        },
+        token,
+      );
       reset();
       const q = new URLSearchParams({
         ref: booking.reference,

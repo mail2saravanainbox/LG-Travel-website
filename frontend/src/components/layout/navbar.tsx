@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import { UserButton, useUser } from "@clerk/nextjs";
 import { EASE_LUX } from "@/lib/motion";
 import { NAV_LINKS } from "@/constants/site";
 import { cn } from "@/lib/utils";
@@ -13,6 +14,7 @@ import { Logo } from "./logo";
 
 export function Navbar() {
   const pathname = usePathname();
+  const { isSignedIn } = useUser();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -73,13 +75,18 @@ export function Navbar() {
         </ul>
 
         <div className="hidden items-center gap-2 lg:flex">
-          <Button
-            href="/login"
-            variant={solid ? "ghost" : "glass"}
-            size="sm"
-          >
-            Login
-          </Button>
+          {isSignedIn ? (
+            <>
+              <Button href="/dashboard" variant={solid ? "ghost" : "glass"} size="sm">
+                Dashboard
+              </Button>
+              <UserButton appearance={{ elements: { avatarBox: "h-9 w-9" } }} />
+            </>
+          ) : (
+            <Button href="/login" variant={solid ? "ghost" : "glass"} size="sm">
+              Login
+            </Button>
+          )}
           <Button href="/packages" variant="gold" size="sm">
             Plan Your Trip
           </Button>
@@ -137,9 +144,15 @@ export function Navbar() {
                 ))}
               </ul>
               <div className="mt-auto flex flex-col gap-3 pt-6">
-                <Button href="/login" variant="outline" size="lg">
-                  Login
-                </Button>
+                {isSignedIn ? (
+                  <Button href="/dashboard" variant="outline" size="lg">
+                    My Dashboard
+                  </Button>
+                ) : (
+                  <Button href="/login" variant="outline" size="lg">
+                    Login
+                  </Button>
+                )}
                 <Button href="/packages" variant="gold" size="lg">
                   Plan Your Trip
                 </Button>

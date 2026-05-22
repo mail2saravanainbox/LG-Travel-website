@@ -20,9 +20,10 @@ import {
   type AdminStats,
 } from "@/services/admin.service";
 import { useAdmin } from "@/store/admin";
+import { ImageUploader } from "@/components/admin/image-uploader";
 import { cn, formatCurrency, formatDate } from "@/lib/utils";
 
-type Tab = "bookings" | "leads";
+type Tab = "bookings" | "leads" | "media";
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -113,7 +114,7 @@ export default function AdminDashboard() {
 
         {/* Tabs */}
         <div className="mt-8 flex gap-2">
-          {(["bookings", "leads"] as Tab[]).map((t) => (
+          {(["bookings", "leads", "media"] as Tab[]).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
@@ -124,43 +125,49 @@ export default function AdminDashboard() {
                   : "border border-navy-700/15 text-navy-700 hover:border-navy-700/40",
               )}
             >
-              {t} ({t === "bookings" ? bookings.length : leads.length})
+              {t === "media" ? "media" : `${t} (${t === "bookings" ? bookings.length : leads.length})`}
             </button>
           ))}
         </div>
 
-        {/* Tables */}
-        <div className="mt-4 overflow-hidden rounded-2xl border border-navy-700/8 bg-white shadow-soft">
-          {tab === "bookings" ? (
-            <Table
-              head={["Reference", "Package", "Guest", "Travellers", "Total", "Status", "Date"]}
-              rows={bookings.map((b) => [
-                b.reference,
-                b.package?.title ?? "—",
-                `${b.leadName} · ${b.leadEmail}`,
-                String(b.travelers),
-                formatCurrency(Number(b.total), b.currency),
-                <StatusPill key={b.id} status={b.status} />,
-                formatDate(b.createdAt),
-              ])}
-              empty="No bookings yet."
-            />
-          ) : (
-            <Table
-              head={["Name", "Email", "Phone", "Destination", "Budget", "Message", "Date"]}
-              rows={leads.map((l) => [
-                l.name,
-                l.email,
-                l.phone ?? "—",
-                l.destination ?? "—",
-                l.budget ?? "—",
-                <span key={l.id} className="line-clamp-2 max-w-xs text-ink/60">{l.message ?? "—"}</span>,
-                formatDate(l.createdAt),
-              ])}
-              empty="No leads yet."
-            />
-          )}
-        </div>
+        {/* Panels */}
+        {tab === "media" ? (
+          <div className="mt-4">
+            <ImageUploader />
+          </div>
+        ) : (
+          <div className="mt-4 overflow-hidden rounded-2xl border border-navy-700/8 bg-white shadow-soft">
+            {tab === "bookings" ? (
+              <Table
+                head={["Reference", "Package", "Guest", "Travellers", "Total", "Status", "Date"]}
+                rows={bookings.map((b) => [
+                  b.reference,
+                  b.package?.title ?? "—",
+                  `${b.leadName} · ${b.leadEmail}`,
+                  String(b.travelers),
+                  formatCurrency(Number(b.total), b.currency),
+                  <StatusPill key={b.id} status={b.status} />,
+                  formatDate(b.createdAt),
+                ])}
+                empty="No bookings yet."
+              />
+            ) : (
+              <Table
+                head={["Name", "Email", "Phone", "Destination", "Budget", "Message", "Date"]}
+                rows={leads.map((l) => [
+                  l.name,
+                  l.email,
+                  l.phone ?? "—",
+                  l.destination ?? "—",
+                  l.budget ?? "—",
+                  <span key={l.id} className="line-clamp-2 max-w-xs text-ink/60">{l.message ?? "—"}</span>,
+                  formatDate(l.createdAt),
+                ])}
+                empty="No leads yet."
+              />
+            )}
+          </div>
+        )}
       </main>
     </div>
   );

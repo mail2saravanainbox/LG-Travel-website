@@ -8,6 +8,7 @@ import { TestimonialsModule } from "./modules/testimonials/testimonials.module";
 import { InquiriesModule } from "./modules/inquiries/inquiries.module";
 import { BookingsModule } from "./modules/bookings/bookings.module";
 import { AdminModule } from "./modules/admin/admin.module";
+import { MediaModule } from "./modules/media/media.module";
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AdminModule } from "./modules/admin/admin.module";
     InquiriesModule,
     BookingsModule,
     AdminModule,
+    MediaModule,
   ],
   controllers: [HealthController],
 })

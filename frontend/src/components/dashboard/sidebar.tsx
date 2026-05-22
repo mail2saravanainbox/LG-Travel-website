@@ -11,6 +11,7 @@ import {
   Settings,
   User,
 } from "lucide-react";
+import { SignOutButton, UserButton, useUser } from "@clerk/nextjs";
 import { Logo } from "@/components/layout/logo";
 import { cn } from "@/lib/utils";
 
@@ -25,6 +26,7 @@ const items = [
 
 export function DashboardSidebar() {
   const pathname = usePathname();
+  const { user } = useUser();
   return (
     <aside className="fixed inset-y-0 left-0 z-40 hidden w-72 flex-col border-r border-navy-700/8 bg-white p-6 lg:flex">
       <Logo />
@@ -48,12 +50,25 @@ export function DashboardSidebar() {
           );
         })}
       </nav>
-      <Link
-        href="/login"
-        className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-rose-500 transition-colors hover:bg-rose-50"
-      >
-        <LogOut className="h-5 w-5" /> Sign out
-      </Link>
+      <div className="mt-2 flex items-center gap-3 rounded-xl border border-navy-700/8 px-3 py-2.5">
+        <UserButton appearance={{ elements: { avatarBox: "h-9 w-9" } }} />
+        <div className="min-w-0">
+          <p className="truncate text-sm font-medium text-navy-900">
+            {user?.fullName ?? user?.firstName ?? "My account"}
+          </p>
+          <p className="truncate text-xs text-ink/50">
+            {user?.primaryEmailAddress?.emailAddress ?? ""}
+          </p>
+        </div>
+      </div>
+      <SignOutButton redirectUrl="/">
+        <button
+          type="button"
+          className="mt-2 flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-rose-500 transition-colors hover:bg-rose-50"
+        >
+          <LogOut className="h-5 w-5" /> Sign out
+        </button>
+      </SignOutButton>
     </aside>
   );
 }
