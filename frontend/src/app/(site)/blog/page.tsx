@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Clock } from "lucide-react";
-import { blogPosts } from "@/data/blog";
+import { fetchBlogPosts } from "@/services/blog.service";
 import { PageHeader } from "@/components/shared/page-header";
 import { Reveal, RevealGroup } from "@/components/shared/reveal";
 import { Badge } from "@/components/ui/badge";
@@ -13,8 +13,9 @@ export const metadata: Metadata = {
   description: "Stories, guides and inspiration from the LG Travels team of specialists.",
 };
 
-export default function BlogPage() {
-  const [featured, ...rest] = blogPosts;
+export default async function BlogPage() {
+  const posts = await fetchBlogPosts();
+  const [featured, ...rest] = posts;
 
   return (
     <>

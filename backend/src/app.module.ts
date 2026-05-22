@@ -9,6 +9,7 @@ import { InquiriesModule } from "./modules/inquiries/inquiries.module";
 import { BookingsModule } from "./modules/bookings/bookings.module";
 import { AdminModule } from "./modules/admin/admin.module";
 import { MediaModule } from "./modules/media/media.module";
+import { BlogModule } from "./modules/blog/blog.module";
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { MediaModule } from "./modules/media/media.module";
     BookingsModule,
     AdminModule,
     MediaModule,
+    BlogModule,
   ],
   controllers: [HealthController],
 })

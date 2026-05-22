@@ -3,9 +3,12 @@
  * Handles Decimal→number coercion (Prisma serialises Decimal as string)
  * and field-name differences (isFeatured→featured, dayNumber→day, avatarUrl→avatar).
  */
-import type { Destination, ItineraryDay, Testimonial, TourPackage } from "@/types";
+import type { BlogPost, Destination, ItineraryDay, Testimonial, TourPackage } from "@/types";
 
 const arr = <T,>(x: unknown): T[] => (Array.isArray(x) ? (x as T[]) : []);
+
+const FALLBACK_COVER =
+  "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1600&q=80";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -66,6 +69,30 @@ export function mapPackage(p: any): TourPackage {
     itinerary: arr<any>(p.itinerary).map(mapItinerary),
     featured: Boolean(p.isFeatured),
     badge: p.badge ?? undefined,
+  };
+}
+
+export function mapBlogPost(p: any): BlogPost {
+  const author = p.author
+    ? {
+        name: p.author.fullName ?? "LG Travels",
+        avatar: p.author.avatarUrl ?? "https://i.pravatar.cc/200?img=68",
+        role: "Travel Writer",
+      }
+    : { name: "LG Travels Editorial", avatar: "https://i.pravatar.cc/200?img=68", role: "Travel Desk" };
+
+  return {
+    id: p.id,
+    slug: p.slug,
+    title: p.title,
+    excerpt: p.excerpt ?? "",
+    content: p.content ?? "",
+    cover: p.coverImage ?? FALLBACK_COVER,
+    author,
+    category: p.category ?? "Journal",
+    readingTime: p.readingTime ?? 4,
+    publishedAt: (p.publishedAt ?? p.createdAt ?? new Date().toISOString()).slice(0, 10),
+    tags: arr<string>(p.tags),
   };
 }
 

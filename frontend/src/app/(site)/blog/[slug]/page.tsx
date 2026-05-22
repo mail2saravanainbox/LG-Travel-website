@@ -3,12 +3,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Clock } from "lucide-react";
-import { blogPosts, getPost } from "@/data/blog";
+import { fetchBlogPost, fetchBlogPosts, fetchBlogSlugs } from "@/services/blog.service";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
 
-export function generateStaticParams() {
-  return blogPosts.map((p) => ({ slug: p.slug }));
+export async function generateStaticParams() {
+  return (await fetchBlogSlugs()).map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
@@ -17,7 +17,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = getPost(slug);
+  const post = await fetchBlogPost(slug);
   if (!post) return { title: "Post not found" };
   return {
     title: post.title,
@@ -32,10 +32,10 @@ export default async function BlogDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = getPost(slug);
+  const post = await fetchBlogPost(slug);
   if (!post) notFound();
 
-  const more = blogPosts.filter((p) => p.id !== post.id).slice(0, 3);
+  const more = (await fetchBlogPosts()).filter((p) => p.id !== post.id).slice(0, 3);
 
   return (
     <article>

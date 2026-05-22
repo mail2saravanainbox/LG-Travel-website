@@ -154,3 +154,30 @@ export const adminUpdatePackage = (
 /** Delete a package by slug (admin-only). Refused by the API if it has bookings. */
 export const adminDeletePackage = (token: string, slug: string) =>
   apiDelete<{ deleted: boolean; slug: string }>(`/packages/${slug}`, token);
+
+export interface NewBlogInput {
+  title: string;
+  slug?: string;
+  excerpt?: string;
+  content?: string;
+  coverImage?: string;
+  category?: string;
+  readingTime?: number;
+  tags?: string[];
+  published?: boolean;
+}
+
+/** Create a blog post (admin-only). Published by default. */
+export const adminCreateBlogPost = (token: string, payload: NewBlogInput) =>
+  apiPost<{ id: string; slug: string; title: string }>("/blog", payload, token);
+
+/** Update a blog post by slug (admin-only). */
+export const adminUpdateBlogPost = (
+  token: string,
+  slug: string,
+  payload: Partial<NewBlogInput>,
+) => apiPatch<{ id: string; slug: string; title: string }>(`/blog/${slug}`, payload, token);
+
+/** Delete a blog post by slug (admin-only). */
+export const adminDeleteBlogPost = (token: string, slug: string) =>
+  apiDelete<{ deleted: boolean; slug: string }>(`/blog/${slug}`, token);
