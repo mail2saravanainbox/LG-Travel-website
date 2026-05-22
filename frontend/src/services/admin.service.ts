@@ -1,4 +1,4 @@
-import { API_BASE, apiPost } from "./api";
+import { API_BASE, apiDelete, apiPatch, apiPost } from "./api";
 
 export interface AdminStats {
   totalBookings: number;
@@ -138,3 +138,19 @@ export interface NewPackageInput {
 /** Create a package (admin-only). Returns the created package with its slug. */
 export const adminCreatePackage = (token: string, payload: NewPackageInput) =>
   apiPost<{ id: string; slug: string; title: string }>("/packages", payload, token);
+
+/** Update an existing package by slug (admin-only). All fields optional. */
+export const adminUpdatePackage = (
+  token: string,
+  slug: string,
+  payload: Partial<NewPackageInput> & { isActive?: boolean },
+) =>
+  apiPatch<{ id: string; slug: string; title: string }>(
+    `/packages/${slug}`,
+    payload,
+    token,
+  );
+
+/** Delete a package by slug (admin-only). Refused by the API if it has bookings. */
+export const adminDeletePackage = (token: string, slug: string) =>
+  apiDelete<{ deleted: boolean; slug: string }>(`/packages/${slug}`, token);

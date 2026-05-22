@@ -1,6 +1,17 @@
-import { Body, Controller, Get, Param, Post, Query, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from "@nestjs/common";
 import { PackagesService } from "./packages.service";
 import { CreatePackageDto } from "./create-package.dto";
+import { UpdatePackageDto } from "./update-package.dto";
 import { AdminGuard } from "../admin/admin.module";
 
 @Controller("packages")
@@ -21,6 +32,20 @@ export class PackagesController {
   @Post()
   create(@Body() dto: CreatePackageDto) {
     return this.service.create(dto);
+  }
+
+  // Admin-only: edit an existing package.
+  @UseGuards(AdminGuard)
+  @Patch(":slug")
+  update(@Param("slug") slug: string, @Body() dto: UpdatePackageDto) {
+    return this.service.update(slug, dto);
+  }
+
+  // Admin-only: delete a package (refused if it has bookings).
+  @UseGuards(AdminGuard)
+  @Delete(":slug")
+  remove(@Param("slug") slug: string) {
+    return this.service.remove(slug);
   }
 
   @Get(":slug")

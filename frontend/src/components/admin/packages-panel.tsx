@@ -2,17 +2,32 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
-import { ArrowLeft, ExternalLink, Loader2, Plus, Star } from "lucide-react";
-import { fetchPackages } from "@/services/packages.service";
+import {
+  ArrowLeft,
+  ExternalLink,
+  Loader2,
+  Pencil,
+  Plus,
+  Star,
+  Trash2,
+} from "lucide-react";
+import { fetchPackage, fetchPackages } from "@/services/packages.service";
+import { adminDeletePackage } from "@/services/admin.service";
+import { useAdmin } from "@/store/admin";
 import type { TourPackage } from "@/types";
 import { PackageForm } from "./package-form";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/utils";
 
+type Mode = { kind: "list" } | { kind: "add" } | { kind: "edit"; pkg: TourPackage };
+
 export function PackagesPanel() {
+  const token = useAdmin((s) => s.token);
   const [packages, setPackages] = useState<TourPackage[]>([]);
   const [loading, setLoading] = useState(true);
-  const [adding, setAdding] = useState(false);
+  const [mode, setMode] = useState<Mode>({ kind: "list" });
+  const [opening, setOpening] = useState<string | null>(null); // slug being loaded for edit
+  const [deleting, setDeleting] = useState<string | null>(null);
 
   const load = useCallback(() => {
     setLoading(true);
@@ -25,19 +40,42 @@ export function PackagesPanel() {
     load();
   }, [load]);
 
-  if (adding) {
+  async function startEdit(slug: string) {
+    setOpening(slug);
+    try {
+      const full = await fetchPackage(slug); // includes itinerary
+      if (full) setMode({ kind: "edit", pkg: full });
+    } finally {
+      setOpening(null);
+    }
+  }
+
+  async function handleDelete(slug: string, title: string) {
+    if (!token) return;
+    if (!window.confirm(`Delete "${title}"? This cannot be undone.`)) return;
+    setDeleting(slug);
+    try {
+      await adminDeletePackage(token, slug);
+      load();
+    } catch (e) {
+      window.alert((e as Error).message);
+    } finally {
+      setDeleting(null);
+    }
+  }
+
+  if (mode.kind !== "list") {
     return (
       <div>
         <button
-          onClick={() => setAdding(false)}
+          onClick={() => setMode({ kind: "list" })}
           className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-navy-700 hover:text-gold-600"
         >
           <ArrowLeft className="h-4 w-4" /> Back to all packages
         </button>
         <PackageForm
-          onCreated={() => {
-            load();
-          }}
+          initial={mode.kind === "edit" ? mode.pkg : undefined}
+          onSaved={load}
         />
       </div>
     );
@@ -47,9 +85,11 @@ export function PackagesPanel() {
     <div>
       <div className="flex items-center justify-between">
         <p className="text-sm text-ink/60">
-          {loading ? "Loading…" : `${packages.length} package${packages.length === 1 ? "" : "s"} live on the site`}
+          {loading
+            ? "Loading…"
+            : `${packages.length} package${packages.length === 1 ? "" : "s"} live on the site`}
         </p>
-        <Button variant="gold" size="sm" onClick={() => setAdding(true)}>
+        <Button variant="gold" size="sm" onClick={() => setMode({ kind: "add" })}>
           <Plus className="h-4 w-4" /> Add package
         </Button>
       </div>
@@ -96,6 +136,31 @@ export function PackagesPanel() {
                   >
                     View <ExternalLink className="h-3 w-3" />
                   </a>
+                </div>
+                <div className="mt-3 flex gap-2 border-t border-navy-700/8 pt-3">
+                  <button
+                    onClick={() => startEdit(p.slug)}
+                    disabled={opening === p.slug}
+                    className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-navy-700/15 py-1.5 text-xs font-medium text-navy-700 hover:border-navy-700/40 disabled:opacity-50"
+                  >
+                    {opening === p.slug ? (
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    ) : (
+                      <Pencil className="h-3.5 w-3.5" />
+                    )}
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(p.slug, p.title)}
+                    disabled={deleting === p.slug}
+                    className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-rose-200 px-3 py-1.5 text-xs font-medium text-rose-500 hover:bg-rose-50 disabled:opacity-50"
+                  >
+                    {deleting === p.slug ? (
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    ) : (
+                      <Trash2 className="h-3.5 w-3.5" />
+                    )}
+                  </button>
                 </div>
               </div>
             </li>

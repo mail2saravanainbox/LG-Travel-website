@@ -2,6 +2,7 @@ import { ConflictException, Injectable, NotFoundException } from "@nestjs/common
 import { Prisma } from "@prisma/client";
 import { PrismaService } from "../../prisma/prisma.service";
 import { CreatePackageDto } from "./create-package.dto";
+import { UpdatePackageDto } from "./update-package.dto";
 
 /** "Bali Honeymoon Escape" → "bali-honeymoon-escape" */
 function slugify(input: string): string {
@@ -73,6 +74,96 @@ export class PackagesService {
       },
       include: { itinerary: { orderBy: { dayNumber: "asc" } } },
     });
+  }
+
+  async update(slug: string, dto: UpdatePackageDto) {
+    const pkg = await this.prisma.package.findUnique({ where: { slug } });
+    if (!pkg) throw new NotFoundException(`Package "${slug}" not found`);
+
+    // Allow renaming the slug (must stay unique).
+    let nextSlug = pkg.slug;
+    if (dto.slug?.trim()) {
+      nextSlug = slugify(dto.slug);
+      if (nextSlug !== pkg.slug) {
+        const clash = await this.prisma.package.findUnique({ where: { slug: nextSlug } });
+        if (clash) throw new ConflictException(`A package with slug "${nextSlug}" already exists`);
+      }
+    }
+
+    // Optional destination relink by slug.
+    let destinationId: string | null | undefined;
+    if (dto.destinationSlug !== undefined) {
+      if (dto.destinationSlug) {
+        const dest = await this.prisma.destination.findUnique({
+          where: { slug: dto.destinationSlug },
+        });
+        destinationId = dest?.id ?? null;
+      } else {
+        destinationId = null;
+      }
+    }
+
+    // Only `undefined` fields are left unchanged by Prisma.
+    return this.prisma.$transaction(async (tx) => {
+      if (dto.itinerary) {
+        await tx.itinerary.deleteMany({ where: { packageId: pkg.id } });
+      }
+      return tx.package.update({
+        where: { id: pkg.id },
+        data: {
+          slug: nextSlug,
+          title: dto.title,
+          summary: dto.summary,
+          description: dto.description,
+          location: dto.location,
+          heroImage: dto.heroImage,
+          gallery: dto.gallery,
+          durationDays: dto.durationDays,
+          durationNights: dto.durationNights,
+          price: dto.price,
+          oldPrice: dto.oldPrice,
+          currency: dto.currency,
+          groupSize: dto.groupSize,
+          category: dto.category as never,
+          highlights: dto.highlights,
+          inclusions: dto.inclusions,
+          exclusions: dto.exclusions,
+          badge: dto.badge,
+          isFeatured: dto.isFeatured,
+          isActive: dto.isActive,
+          destinationId,
+          ...(dto.itinerary
+            ? {
+                itinerary: {
+                  create: dto.itinerary.map((d) => ({
+                    dayNumber: d.dayNumber,
+                    title: d.title,
+                    description: d.description,
+                    stay: d.stay,
+                    meals: d.meals ?? [],
+                  })),
+                },
+              }
+            : {}),
+        },
+        include: { itinerary: { orderBy: { dayNumber: "asc" } } },
+      });
+    });
+  }
+
+  async remove(slug: string) {
+    const pkg = await this.prisma.package.findUnique({
+      where: { slug },
+      include: { _count: { select: { bookings: true } } },
+    });
+    if (!pkg) throw new NotFoundException(`Package "${slug}" not found`);
+    if (pkg._count.bookings > 0) {
+      throw new ConflictException(
+        `Cannot delete "${slug}" — it has ${pkg._count.bookings} booking(s). Deactivate it instead (set isActive=false) to hide it from the site.`,
+      );
+    }
+    await this.prisma.package.delete({ where: { id: pkg.id } });
+    return { deleted: true, slug };
   }
 
   findAll(params: { category?: string; featured?: string; sort?: string }) {

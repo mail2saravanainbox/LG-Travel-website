@@ -5,12 +5,14 @@ import Image from "next/image";
 import { ImagePlus, Loader2, Plus, Trash2, X } from "lucide-react";
 import {
   adminCreatePackage,
+  adminUpdatePackage,
   uploadImage,
   type ItineraryDayInput,
   type NewPackageInput,
 } from "@/services/admin.service";
 import { fetchDestinations } from "@/services/destinations.service";
 import { useAdmin } from "@/store/admin";
+import type { TourPackage } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
 
@@ -22,41 +24,61 @@ const inputClass =
 /** Split a textarea (one item per line) into a trimmed string array. */
 const lines = (v: string) => v.split("\n").map((s) => s.trim()).filter(Boolean);
 
-export function PackageForm({ onCreated }: { onCreated?: () => void }) {
+export function PackageForm({
+  initial,
+  onSaved,
+  onCreated,
+}: {
+  /** When provided, the form edits this package instead of creating a new one. */
+  initial?: TourPackage;
+  onSaved?: () => void;
+  /** @deprecated use onSaved */
+  onCreated?: () => void;
+}) {
   const token = useAdmin((s) => s.token);
+  const isEdit = Boolean(initial);
+  const editSlug = initial?.slug;
   const [destinations, setDestinations] = useState<{ slug: string; name: string }[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [doneSlug, setDoneSlug] = useState<string | null>(null);
 
-  // Core fields
-  const [title, setTitle] = useState("");
-  const [slug, setSlug] = useState("");
-  const [category, setCategory] = useState("Luxury");
-  const [location, setLocation] = useState("");
-  const [destinationSlug, setDestinationSlug] = useState("");
-  const [summary, setSummary] = useState("");
-  const [description, setDescription] = useState("");
-  const [durationDays, setDurationDays] = useState(5);
-  const [durationNights, setDurationNights] = useState(4);
-  const [price, setPrice] = useState(0);
-  const [oldPrice, setOldPrice] = useState("");
-  const [currency, setCurrency] = useState("INR");
-  const [groupSize, setGroupSize] = useState("");
-  const [badge, setBadge] = useState("");
-  const [isFeatured, setIsFeatured] = useState(false);
-  const [highlights, setHighlights] = useState("");
-  const [inclusions, setInclusions] = useState("");
-  const [exclusions, setExclusions] = useState("");
+  // Core fields (prefilled when editing)
+  const [title, setTitle] = useState(initial?.title ?? "");
+  const [slug, setSlug] = useState(initial?.slug ?? "");
+  const [category, setCategory] = useState<string>(initial?.category ?? "Luxury");
+  const [location, setLocation] = useState(initial?.location ?? "");
+  const [destinationSlug, setDestinationSlug] = useState(initial?.destinationSlug ?? "");
+  const [summary, setSummary] = useState(initial?.summary ?? "");
+  const [description, setDescription] = useState(initial?.description ?? "");
+  const [durationDays, setDurationDays] = useState(initial?.durationDays ?? 5);
+  const [durationNights, setDurationNights] = useState(initial?.durationNights ?? 4);
+  const [price, setPrice] = useState(initial?.price ?? 0);
+  const [oldPrice, setOldPrice] = useState(initial?.oldPrice ? String(initial.oldPrice) : "");
+  const [currency, setCurrency] = useState(initial?.currency ?? "INR");
+  const [groupSize, setGroupSize] = useState(initial?.groupSize ?? "");
+  const [badge, setBadge] = useState(initial?.badge ?? "");
+  const [isFeatured, setIsFeatured] = useState(Boolean(initial?.featured));
+  const [isActive, setIsActive] = useState(true);
+  const [highlights, setHighlights] = useState((initial?.highlights ?? []).join("\n"));
+  const [inclusions, setInclusions] = useState((initial?.inclusions ?? []).join("\n"));
+  const [exclusions, setExclusions] = useState((initial?.exclusions ?? []).join("\n"));
 
   // Images
-  const [heroImage, setHeroImage] = useState("");
-  const [gallery, setGallery] = useState<string[]>([]);
+  const [heroImage, setHeroImage] = useState(initial?.heroImage ?? "");
+  const [gallery, setGallery] = useState<string[]>(initial?.gallery ?? []);
   const [uploadingHero, setUploadingHero] = useState(false);
   const [uploadingGallery, setUploadingGallery] = useState(false);
 
-  // Itinerary
-  const [itinerary, setItinerary] = useState<ItineraryDayInput[]>([]);
+  // Itinerary (map the type's `day` → form's `dayNumber`)
+  const [itinerary, setItinerary] = useState<ItineraryDayInput[]>(
+    (initial?.itinerary ?? []).map((d) => ({
+      dayNumber: d.day,
+      title: d.title,
+      description: d.description,
+      stay: d.stay,
+    })),
+  );
 
   useEffect(() => {
     fetchDestinations()
@@ -116,7 +138,7 @@ export function PackageForm({ onCreated }: { onCreated?: () => void }) {
     setError(null);
     setDoneSlug(null);
     try {
-      const payload: NewPackageInput = {
+      const payload: NewPackageInput & { isActive?: boolean } = {
         title,
         slug: slug || undefined,
         category,
@@ -141,8 +163,16 @@ export function PackageForm({ onCreated }: { onCreated?: () => void }) {
           ? itinerary.filter((d) => d.title.trim())
           : undefined,
       };
-      const created = await adminCreatePackage(token, payload);
-      setDoneSlug(created.slug);
+      let savedSlug: string;
+      if (isEdit && editSlug) {
+        const updated = await adminUpdatePackage(token, editSlug, { ...payload, isActive });
+        savedSlug = updated.slug;
+      } else {
+        const created = await adminCreatePackage(token, payload);
+        savedSlug = created.slug;
+      }
+      setDoneSlug(savedSlug);
+      onSaved?.();
       onCreated?.();
     } catch (e) {
       setError((e as Error).message);
@@ -154,9 +184,11 @@ export function PackageForm({ onCreated }: { onCreated?: () => void }) {
   if (doneSlug) {
     return (
       <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-8 text-center">
-        <p className="font-display text-lg font-bold text-emerald-800">Package created ✓</p>
+        <p className="font-display text-lg font-bold text-emerald-800">
+          {isEdit ? "Changes saved ✓" : "Package created ✓"}
+        </p>
         <p className="mt-2 text-sm text-emerald-700">
-          It will appear on the site within ~30 seconds at:
+          The site updates within ~30 seconds at:
         </p>
         <a
           href={`/packages/${doneSlug}`}
@@ -166,11 +198,13 @@ export function PackageForm({ onCreated }: { onCreated?: () => void }) {
         >
           /packages/{doneSlug}
         </a>
-        <div className="mt-5">
-          <Button variant="gold" onClick={() => setDoneSlug(null)}>
-            Add another package
-          </Button>
-        </div>
+        {!isEdit && (
+          <div className="mt-5">
+            <Button variant="gold" onClick={() => setDoneSlug(null)}>
+              Add another package
+            </Button>
+          </div>
+        )}
       </div>
     );
   }
@@ -181,9 +215,11 @@ export function PackageForm({ onCreated }: { onCreated?: () => void }) {
       className="space-y-6 rounded-2xl border border-navy-700/8 bg-white p-6 shadow-soft"
     >
       <div>
-        <h2 className="font-display text-lg font-bold text-navy-900">New package</h2>
+        <h2 className="font-display text-lg font-bold text-navy-900">
+          {isEdit ? `Edit: ${initial?.title}` : "New package"}
+        </h2>
         <p className="text-sm text-ink/50">
-          Fields marked * are required. The page goes live automatically once saved.
+          Fields marked * are required. The page updates automatically once saved.
         </p>
       </div>
 
@@ -257,11 +293,20 @@ export function PackageForm({ onCreated }: { onCreated?: () => void }) {
         <div><Label>Badge (optional)</Label>
           <Input value={badge} onChange={(e) => setBadge(e.target.value)}
             placeholder="Bestseller" /></div>
-        <label className="flex items-center gap-2 pt-7 text-sm text-ink/80">
-          <input type="checkbox" checked={isFeatured}
-            onChange={(e) => setIsFeatured(e.target.checked)} className="h-4 w-4" />
-          Feature on homepage
-        </label>
+        <div className="flex flex-col justify-center gap-2 pt-2">
+          <label className="flex items-center gap-2 text-sm text-ink/80">
+            <input type="checkbox" checked={isFeatured}
+              onChange={(e) => setIsFeatured(e.target.checked)} className="h-4 w-4" />
+            Feature on homepage
+          </label>
+          {isEdit && (
+            <label className="flex items-center gap-2 text-sm text-ink/80">
+              <input type="checkbox" checked={isActive}
+                onChange={(e) => setIsActive(e.target.checked)} className="h-4 w-4" />
+              Visible on site (uncheck to hide)
+            </label>
+          )}
+        </div>
       </div>
 
       {/* Lists */}
@@ -353,7 +398,7 @@ export function PackageForm({ onCreated }: { onCreated?: () => void }) {
       {error && <p className="text-sm text-rose-500">{error}</p>}
 
       <Button type="submit" variant="gold" size="lg" disabled={submitting || !title}>
-        {submitting ? "Saving…" : "Create package"}
+        {submitting ? "Saving…" : isEdit ? "Save changes" : "Create package"}
       </Button>
     </form>
   );
