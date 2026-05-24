@@ -20,10 +20,16 @@ export interface SiteSettings {
   };
   /** When false, the public Packages page hides the International section. */
   internationalEnabled: boolean;
-  /** Editable text in the homepage hero's floating "designer" card. */
+  /** Editable text in the homepage hero's floating cards. */
   hero: {
     designerEyebrow: string;
     designerTitle: string;
+    trendingEyebrow: string;
+    trendingBadge: string;
+    trendingTitle: string;
+    trendingSubtitle: string;
+    trendingPrice: string;
+    trendingRating: string;
   };
 }
 
@@ -42,6 +48,12 @@ const DEFAULTS: SiteSettings = {
   hero: {
     designerEyebrow: "Your designer is online",
     designerTitle: "Plan a bespoke trip in minutes",
+    trendingEyebrow: "Trending now",
+    trendingBadge: "-14%",
+    trendingTitle: "Maldives Overwater Escape",
+    trendingSubtitle: "6 days · Private villa · Seaplane",
+    trendingPrice: "₹3,48,600",
+    trendingRating: "4.9",
   },
 };
 

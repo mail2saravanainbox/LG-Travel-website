@@ -27,9 +27,21 @@ const fadeUp: Variants = {
 export function Hero({
   designerEyebrow = "Your designer is online",
   designerTitle = "Plan a bespoke trip in minutes",
+  trendingEyebrow = "Trending now",
+  trendingBadge = "-14%",
+  trendingTitle = "Maldives Overwater Escape",
+  trendingSubtitle = "6 days · Private villa · Seaplane",
+  trendingPrice = "₹3,48,600",
+  trendingRating = "4.9",
 }: {
   designerEyebrow?: string;
   designerTitle?: string;
+  trendingEyebrow?: string;
+  trendingBadge?: string;
+  trendingTitle?: string;
+  trendingSubtitle?: string;
+  trendingPrice?: string;
+  trendingRating?: string;
 } = {}) {
   return (
     <section className="relative flex min-h-[100svh] items-center overflow-hidden">
@@ -138,18 +150,22 @@ export function Hero({
           <div className="ml-auto w-full max-w-sm space-y-4">
             <div className="glass animate-float-slow rounded-3xl p-5 text-white shadow-glow">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-white/70">Trending now</span>
-                <span className="rounded-full bg-gold-400 px-2.5 py-0.5 text-xs font-semibold text-navy-900">
-                  -14%
-                </span>
+                <span className="text-sm text-white/70">{trendingEyebrow}</span>
+                {trendingBadge && (
+                  <span className="rounded-full bg-gold-400 px-2.5 py-0.5 text-xs font-semibold text-navy-900">
+                    {trendingBadge}
+                  </span>
+                )}
               </div>
-              <p className="mt-2 font-display text-xl font-semibold">Maldives Overwater Escape</p>
-              <p className="text-sm text-white/60">6 days · Private villa · Seaplane</p>
+              <p className="mt-2 font-display text-xl font-semibold">{trendingTitle}</p>
+              <p className="text-sm text-white/60">{trendingSubtitle}</p>
               <div className="mt-4 flex items-end justify-between">
-                <span className="text-2xl font-bold">₹3,48,600</span>
-                <span className="flex items-center gap-1 text-sm text-gold-300">
-                  <Star className="h-4 w-4 fill-gold-300" /> 4.9
-                </span>
+                <span className="text-2xl font-bold">{trendingPrice}</span>
+                {trendingRating && (
+                  <span className="flex items-center gap-1 text-sm text-gold-300">
+                    <Star className="h-4 w-4 fill-gold-300" /> {trendingRating}
+                  </span>
+                )}
               </div>
             </div>
             <div className="glass animate-float-slower ml-8 rounded-2xl p-4 text-white shadow-glow">

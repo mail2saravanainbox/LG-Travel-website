@@ -109,9 +109,58 @@ export function SettingsPanel() {
       </fieldset>
 
       <fieldset className="space-y-4">
-        <legend className="text-xs font-semibold uppercase tracking-wider text-navy-700">Homepage hero — floating card</legend>
+        <legend className="text-xs font-semibold uppercase tracking-wider text-navy-700">
+          Homepage hero — Trending card
+        </legend>
         <p className="text-xs text-ink/50">
-          The small glass card on the right of the hero (above &ldquo;Plan Your Trip&rdquo;).
+          The larger glass card on the right of the hero (with the price + rating).
+        </p>
+        <div className="grid gap-4 sm:grid-cols-3">
+          <div>
+            <Label>Eyebrow</Label>
+            <Input value={settings.hero.trendingEyebrow}
+              onChange={(e) => updateHero("trendingEyebrow", e.target.value)}
+              placeholder="Trending now" />
+          </div>
+          <div>
+            <Label>Discount badge (optional)</Label>
+            <Input value={settings.hero.trendingBadge}
+              onChange={(e) => updateHero("trendingBadge", e.target.value)}
+              placeholder="-14%  (leave blank to hide)" />
+          </div>
+          <div>
+            <Label>Rating (optional)</Label>
+            <Input value={settings.hero.trendingRating}
+              onChange={(e) => updateHero("trendingRating", e.target.value)}
+              placeholder="4.9  (leave blank to hide)" />
+          </div>
+          <div className="sm:col-span-2">
+            <Label>Title</Label>
+            <Input value={settings.hero.trendingTitle}
+              onChange={(e) => updateHero("trendingTitle", e.target.value)}
+              placeholder="Maldives Overwater Escape" />
+          </div>
+          <div>
+            <Label>Price</Label>
+            <Input value={settings.hero.trendingPrice}
+              onChange={(e) => updateHero("trendingPrice", e.target.value)}
+              placeholder="₹3,48,600" />
+          </div>
+          <div className="sm:col-span-3">
+            <Label>Subtitle</Label>
+            <Input value={settings.hero.trendingSubtitle}
+              onChange={(e) => updateHero("trendingSubtitle", e.target.value)}
+              placeholder="6 days · Private villa · Seaplane" />
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset className="space-y-4">
+        <legend className="text-xs font-semibold uppercase tracking-wider text-navy-700">
+          Homepage hero — Designer card
+        </legend>
+        <p className="text-xs text-ink/50">
+          The small glass card below the Trending card.
         </p>
         <div className="grid gap-4 sm:grid-cols-2">
           <div>

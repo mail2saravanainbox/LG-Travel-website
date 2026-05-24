@@ -36,6 +36,12 @@ export default async function HomePage() {
       <Hero
         designerEyebrow={site.hero.designerEyebrow}
         designerTitle={site.hero.designerTitle}
+        trendingEyebrow={site.hero.trendingEyebrow}
+        trendingBadge={site.hero.trendingBadge}
+        trendingTitle={site.hero.trendingTitle}
+        trendingSubtitle={site.hero.trendingSubtitle}
+        trendingPrice={site.hero.trendingPrice}
+        trendingRating={site.hero.trendingRating}
       />
 
       {/* Mobile search widget (the hero copy is desktop-only) */}
