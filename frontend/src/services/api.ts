@@ -52,6 +52,25 @@ export async function apiPatch<T>(path: string, body: unknown, token?: string): 
   return (await res.json()) as T;
 }
 
+/** PUT JSON (replace). Pass a token for protected routes. */
+export async function apiPut<T>(path: string, body: unknown, token?: string): Promise<T> {
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify(body),
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    const data = (await res.json().catch(() => null)) as { message?: string | string[] } | null;
+    const msg = Array.isArray(data?.message) ? data?.message.join(", ") : data?.message;
+    throw new Error(msg ?? `PUT ${path} → ${res.status}`);
+  }
+  return (await res.json()) as T;
+}
+
 /** DELETE a resource. Pass a token for protected routes. */
 export async function apiDelete<T>(path: string, token?: string): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {

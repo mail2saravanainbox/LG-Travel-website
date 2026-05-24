@@ -10,6 +10,7 @@ import { BookingsModule } from "./modules/bookings/bookings.module";
 import { AdminModule } from "./modules/admin/admin.module";
 import { MediaModule } from "./modules/media/media.module";
 import { BlogModule } from "./modules/blog/blog.module";
+import { SettingsModule } from "./modules/settings/settings.module";
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { BlogModule } from "./modules/blog/blog.module";
     AdminModule,
     MediaModule,
     BlogModule,
+    SettingsModule,
   ],
   controllers: [HealthController],
 })

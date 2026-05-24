@@ -1,4 +1,5 @@
-import { API_BASE, apiDelete, apiPatch, apiPost } from "./api";
+import { API_BASE, apiDelete, apiPatch, apiPost, apiPut } from "./api";
+import type { SiteSettings } from "./settings.service";
 
 export interface AdminStats {
   totalBookings: number;
@@ -247,3 +248,7 @@ export const adminUpdateBooking = (
   reference: string,
   payload: { status?: BookingStatus; notes?: string },
 ) => apiPatch<AdminBooking>(`/admin/bookings/${reference}`, payload, token);
+
+/** Save the site settings (full replace, admin-only). */
+export const adminSaveSiteSettings = (token: string, settings: SiteSettings) =>
+  apiPut<{ key: string; value: SiteSettings }>("/settings/site", settings, token);

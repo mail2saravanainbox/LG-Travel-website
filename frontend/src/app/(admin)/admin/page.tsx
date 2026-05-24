@@ -25,6 +25,7 @@ import { PackagesPanel } from "@/components/admin/packages-panel";
 import { BlogPanel } from "@/components/admin/blog-panel";
 import { DestinationsPanel } from "@/components/admin/destinations-panel";
 import { TestimonialsPanel } from "@/components/admin/testimonials-panel";
+import { SettingsPanel } from "@/components/admin/settings-panel";
 import { BookingsTable } from "@/components/admin/bookings-table";
 import { cn, formatCurrency, formatDate } from "@/lib/utils";
 
@@ -35,7 +36,8 @@ type Tab =
   | "destinations"
   | "blog"
   | "testimonials"
-  | "media";
+  | "media"
+  | "settings";
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -126,7 +128,7 @@ export default function AdminDashboard() {
 
         {/* Tabs */}
         <div className="mt-8 flex gap-2">
-          {(["bookings", "leads", "packages", "destinations", "blog", "testimonials", "media"] as Tab[]).map((t) => (
+          {(["bookings", "leads", "packages", "destinations", "blog", "testimonials", "media", "settings"] as Tab[]).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
@@ -166,6 +168,10 @@ export default function AdminDashboard() {
         ) : tab === "media" ? (
           <div className="mt-4">
             <ImageUploader />
+          </div>
+        ) : tab === "settings" ? (
+          <div className="mt-4">
+            <SettingsPanel />
           </div>
         ) : (
           <div className="mt-4 overflow-hidden rounded-2xl border border-navy-700/8 bg-white shadow-soft">

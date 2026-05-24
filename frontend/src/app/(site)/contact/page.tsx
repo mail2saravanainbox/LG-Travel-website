@@ -2,21 +2,21 @@ import type { Metadata } from "next";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { ContactForm } from "@/components/contact/contact-form";
-import { SITE } from "@/constants/site";
+import { fetchSiteSettings } from "@/services/settings.service";
 
 export const metadata: Metadata = {
   title: "Contact Us",
   description: "Speak with an LG Travels designer and start planning your bespoke luxury journey.",
 };
 
-const details = [
-  { icon: MapPin, label: SITE.addressLabel, value: SITE.address },
-  { icon: Phone, label: "Call us", value: `${SITE.phone}  (${SITE.hours})` },
-  { icon: Mail, label: "Email", value: SITE.email },
-  { icon: Clock, label: "Working hours", value: SITE.hours },
-];
-
-export default function ContactPage() {
+export default async function ContactPage() {
+  const site = await fetchSiteSettings();
+  const details = [
+    { icon: MapPin, label: site.addressLabel, value: site.address },
+    { icon: Phone, label: "Call us", value: `${site.phone}  (${site.hours})` },
+    { icon: Mail, label: "Email", value: site.email },
+    { icon: Clock, label: "Working hours", value: site.hours },
+  ];
   return (
     <>
       <PageHeader

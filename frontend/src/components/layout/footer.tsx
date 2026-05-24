@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Mail, MapPin, Phone } from "lucide-react";
-import { FOOTER_LINKS, SITE } from "@/constants/site";
+import { FOOTER_LINKS } from "@/constants/site";
+import { fetchSiteSettings } from "@/services/settings.service";
 import {
   FacebookIcon,
   InstagramIcon,
@@ -10,15 +11,16 @@ import {
   YoutubeIcon,
 } from "@/components/shared/social-icons";
 
-const socials = [
-  { icon: InstagramIcon, href: SITE.social.instagram, label: "Instagram" },
-  { icon: FacebookIcon, href: SITE.social.facebook, label: "Facebook" },
-  { icon: TwitterIcon, href: SITE.social.twitter, label: "Twitter" },
-  { icon: LinkedinIcon, href: SITE.social.linkedin, label: "LinkedIn" },
-  { icon: YoutubeIcon, href: SITE.social.youtube, label: "YouTube" },
-];
+export async function Footer() {
+  const site = await fetchSiteSettings();
+  const socials = [
+    { icon: InstagramIcon, href: site.social.instagram, label: "Instagram" },
+    { icon: FacebookIcon, href: site.social.facebook, label: "Facebook" },
+    { icon: TwitterIcon, href: site.social.twitter, label: "Twitter" },
+    { icon: LinkedinIcon, href: site.social.linkedin, label: "LinkedIn" },
+    { icon: YoutubeIcon, href: site.social.youtube, label: "YouTube" },
+  ];
 
-export function Footer() {
   return (
     <footer className="relative overflow-hidden bg-navy-900 text-white">
       <div
@@ -29,26 +31,26 @@ export function Footer() {
         <div className="lg:col-span-2">
           <Image
             src="/logo-white.png"
-            alt="LG Travels"
+            alt={site.name}
             width={416}
             height={275}
             className="h-16 w-auto"
           />
           <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/60">
-            {SITE.description}
+            {site.description}
           </p>
           <ul className="mt-6 space-y-3 text-sm text-white/70">
             <li className="flex items-start gap-3">
               <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold-400" />
-              {SITE.address}
+              {site.address}
             </li>
             <li className="flex items-center gap-3">
               <Phone className="h-4 w-4 shrink-0 text-gold-400" />
-              {SITE.phone}
+              {site.phone}
             </li>
             <li className="flex items-center gap-3">
               <Mail className="h-4 w-4 shrink-0 text-gold-400" />
-              {SITE.email}
+              {site.email}
             </li>
           </ul>
         </div>
@@ -77,7 +79,7 @@ export function Footer() {
       <div className="border-t border-white/10">
         <div className="container-lux flex flex-col items-center justify-between gap-4 py-6 sm:flex-row">
           <p className="text-xs text-white/50">
-            © {new Date().getFullYear()} {SITE.name}. All rights reserved.
+            © {new Date().getFullYear()} {site.name}. All rights reserved.
           </p>
           <div className="flex items-center gap-2">
             {socials.map(({ icon: Icon, href, label }) => (
