@@ -23,7 +23,7 @@ export default async function ContactPage() {
         eyebrow="We'd love to hear from you"
         title="Let's design your next journey"
         description="Tell us what you're dreaming of and a dedicated travel designer will craft a proposal — no obligation."
-        image="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=2000&q=80"
+        image="https://res.cloudinary.com/dzevugvgg/image/upload/v1779640596/lg-travels/site/images/1436491865332-7a61a109cc05.jpg"
         crumbs={[{ label: "Contact" }]}
       />
 

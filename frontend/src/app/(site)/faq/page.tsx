@@ -28,7 +28,7 @@ export default function FaqPage() {
         eyebrow="Help centre"
         title="Frequently asked questions"
         description="Everything you need to know before you book. Can't find an answer? We're a message away."
-        image="https://images.unsplash.com/photo-1521295121783-8a321d551ad2?auto=format&fit=crop&w=2000&q=80"
+        image="https://res.cloudinary.com/dzevugvgg/image/upload/v1779640598/lg-travels/site/images/1521295121783-8a321d551ad2.jpg"
         crumbs={[{ label: "FAQ" }]}
       />
 

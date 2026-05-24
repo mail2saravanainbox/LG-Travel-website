@@ -6,7 +6,7 @@ import { Reveal, RevealGroup } from "@/components/shared/reveal";
 // Himalayan scenery, gently animated with a slow zoom/pan ("Ken Burns") so the
 // still image feels like cinematic footage — no external video dependency.
 const BG_IMAGE =
-  "https://images.unsplash.com/photo-1605649487212-47bdab064df7?auto=format&fit=crop&w=2400&q=80";
+  "https://res.cloudinary.com/dzevugvgg/image/upload/v1779640604/lg-travels/site/images/1605649487212-47bdab064df7.jpg";
 
 const features = [
   {

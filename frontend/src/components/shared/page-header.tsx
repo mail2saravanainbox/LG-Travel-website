@@ -17,7 +17,7 @@ interface PageHeaderProps {
 }
 
 const DEFAULT_IMAGE =
-  "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=2000&q=80";
+  "https://res.cloudinary.com/dzevugvgg/image/upload/v1779640606/lg-travels/site/images/1488646953014-85cb44e25828.jpg";
 
 export function PageHeader({
   title,

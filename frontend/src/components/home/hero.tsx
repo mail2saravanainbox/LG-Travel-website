@@ -7,12 +7,12 @@ import { EASE_LUX } from "@/lib/motion";
 import { SearchWidget } from "./search-widget";
 
 const POSTER =
-  "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=2000&q=80";
+  "https://res.cloudinary.com/dzevugvgg/image/upload/v1779640602/lg-travels/site/images/1514282401047-d79a71a590e8.jpg";
 
-// Hot-linked cinematic drone footage (swap for Cloudinary in production).
+// Cinematic drone footage hosted on Cloudinary (HD 1920×1080).
 const VIDEO_SOURCES = [
-  "https://videos.pexels.com/video-files/2169880/2169880-uhd_2560_1440_30fps.mp4",
-  "https://videos.pexels.com/video-files/1526909/1526909-uhd_2560_1440_24fps.mp4",
+  "https://res.cloudinary.com/dzevugvgg/video/upload/v1779640801/lg-travels/site/videos/pexels-2169880.mp4",
+  "https://res.cloudinary.com/dzevugvgg/video/upload/v1779640804/lg-travels/site/videos/pexels-1526909.mp4",
 ];
 
 const fadeUp: Variants = {

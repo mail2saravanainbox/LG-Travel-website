@@ -21,7 +21,7 @@ export default async function PackagesPage() {
         eyebrow="Signature journeys"
         title="Tour packages, designed end-to-end"
         description="Book a ready-made escape or use it as the starting point for something entirely your own."
-        image="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=2000&q=80"
+        image="https://res.cloudinary.com/dzevugvgg/image/upload/v1779640599/lg-travels/site/images/1501785888041-af3ef285b470.jpg"
         crumbs={[{ label: "Packages" }]}
       />
 

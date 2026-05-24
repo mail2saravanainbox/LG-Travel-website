@@ -6,7 +6,7 @@ export const SITE = {
     "LG Travels designs cinematic, bespoke luxury journeys across the globe — private resorts, drone-worthy landscapes and seamless, concierge-grade booking.",
   url: "https://lgtravels.com",
   ogImage:
-    "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+    "https://res.cloudinary.com/dzevugvgg/image/upload/v1779640600/lg-travels/site/images/1507525428034-b723cf961d3e.jpg",
   email: "support@makevoyage.com",
   phone: "757 808 7777",
   hours: "10:00 AM – 10:00 PM",

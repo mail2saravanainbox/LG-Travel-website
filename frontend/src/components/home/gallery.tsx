@@ -2,18 +2,16 @@ import Image from "next/image";
 import { InstagramIcon } from "@/components/shared/social-icons";
 import { SectionHeading } from "@/components/shared/section-heading";
 
-const img = (id: string) =>
-  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=600&q=80`;
-
+// Hosted on Cloudinary (folder: lg-travels/site/gallery).
 const shots = [
-  "photo-1505881502353-a1986add3762",
-  "photo-1530122037265-a5f1f91d3b99",
-  "photo-1518684079-3c830dcef090",
-  "photo-1533105079780-92b9be482077",
-  "photo-1518548419970-58e3b4079ab2",
-  "photo-1545569341-9eb8b30979d9",
-  "photo-1573843981267-be1999ff37cd",
-  "photo-1527668752968-14dc70a27c95",
+  "https://res.cloudinary.com/dzevugvgg/image/upload/v1779640928/lg-travels/site/gallery/1505881502353-a1986add3762.jpg",
+  "https://res.cloudinary.com/dzevugvgg/image/upload/v1779640929/lg-travels/site/gallery/1530122037265-a5f1f91d3b99.jpg",
+  "https://res.cloudinary.com/dzevugvgg/image/upload/v1779640930/lg-travels/site/gallery/1518684079-3c830dcef090.jpg",
+  "https://res.cloudinary.com/dzevugvgg/image/upload/v1779640931/lg-travels/site/gallery/1533105079780-92b9be482077.jpg",
+  "https://res.cloudinary.com/dzevugvgg/image/upload/v1779640931/lg-travels/site/gallery/1518548419970-58e3b4079ab2.jpg",
+  "https://res.cloudinary.com/dzevugvgg/image/upload/v1779640932/lg-travels/site/gallery/1545569341-9eb8b30979d9.jpg",
+  "https://res.cloudinary.com/dzevugvgg/image/upload/v1779640933/lg-travels/site/gallery/1573843981267-be1999ff37cd.jpg",
+  "https://res.cloudinary.com/dzevugvgg/image/upload/v1779640934/lg-travels/site/gallery/1527668752968-14dc70a27c95.jpg",
 ];
 
 export function Gallery() {
@@ -39,7 +37,7 @@ export function Gallery() {
               className="group relative h-56 w-56 shrink-0 overflow-hidden rounded-2xl md:h-64 md:w-64"
             >
               <Image
-                src={img(id)}
+                src={id}
                 alt="Travel moment"
                 fill
                 sizes="256px"

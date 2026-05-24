@@ -40,7 +40,7 @@ export default function AboutPage() {
         eyebrow="Our story"
         title="Luxury travel, reimagined for a global generation"
         description="We're a travel-tech brand on a mission to make extraordinary journeys feel effortless — wherever in the world you call home."
-        image="https://images.unsplash.com/photo-1488085061387-422e29b40080?auto=format&fit=crop&w=2000&q=80"
+        image="https://res.cloudinary.com/dzevugvgg/image/upload/v1779640593/lg-travels/site/images/1488085061387-422e29b40080.jpg"
         crumbs={[{ label: "About" }]}
       />
 
@@ -49,7 +49,7 @@ export default function AboutPage() {
         <Reveal>
           <div className="relative aspect-[4/3] overflow-hidden rounded-3xl shadow-lift">
             <Image
-              src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1200&q=80"
+              src="https://res.cloudinary.com/dzevugvgg/image/upload/v1779640594/lg-travels/site/images/1469854523086-cc02fe5d8800.jpg"
               alt="Travellers on a journey"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"

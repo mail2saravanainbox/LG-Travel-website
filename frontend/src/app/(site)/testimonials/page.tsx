@@ -17,7 +17,7 @@ export default function TestimonialsPage() {
         eyebrow="Loved worldwide"
         title="What our travellers say"
         description="Thousands of journeys, one consistent promise — kept."
-        image="https://images.unsplash.com/photo-1530789253388-582c481c54b0?auto=format&fit=crop&w=2000&q=80"
+        image="https://res.cloudinary.com/dzevugvgg/image/upload/v1779640599/lg-travels/site/images/1530789253388-582c481c54b0.jpg"
         crumbs={[{ label: "Testimonials" }]}
       />
 

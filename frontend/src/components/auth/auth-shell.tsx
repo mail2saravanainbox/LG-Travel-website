@@ -19,7 +19,7 @@ export function AuthShell({
       {/* Visual side */}
       <div className="relative hidden overflow-hidden lg:block">
         <Image
-          src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1400&q=80"
+          src="https://res.cloudinary.com/dzevugvgg/image/upload/v1779640600/lg-travels/site/images/1507525428034-b723cf961d3e.jpg"
           alt="Luxury beach"
           fill
           priority

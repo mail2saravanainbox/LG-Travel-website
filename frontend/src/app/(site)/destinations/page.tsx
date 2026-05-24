@@ -17,7 +17,7 @@ export default async function DestinationsPage() {
         eyebrow="Explore the world"
         title="Destinations worth crossing the world for"
         description="Hand-selected places, each with itineraries designed by specialists who know them intimately."
-        image="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2000&q=80"
+        image="https://res.cloudinary.com/dzevugvgg/image/upload/v1779640597/lg-travels/site/images/1469474968028-56623f02e42e.jpg"
         crumbs={[{ label: "Destinations" }]}
       />
       <section className="container-lux py-16 md:py-24">

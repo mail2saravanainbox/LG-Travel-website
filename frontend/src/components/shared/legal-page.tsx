@@ -20,7 +20,7 @@ export function LegalPage({
         eyebrow="Legal"
         title={title}
         description={`Last updated ${updated}`}
-        image="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=2000&q=80"
+        image="https://res.cloudinary.com/dzevugvgg/image/upload/v1779640605/lg-travels/site/images/1450101499163-c8848c66ca85.jpg"
         crumbs={[{ label: title }]}
       />
       <section className="container-lux max-w-3xl py-16 md:py-24">

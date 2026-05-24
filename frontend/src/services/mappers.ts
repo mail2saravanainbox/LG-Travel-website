@@ -8,7 +8,7 @@ import type { BlogPost, Destination, ItineraryDay, Testimonial, TourPackage } fr
 const arr = <T,>(x: unknown): T[] => (Array.isArray(x) ? (x as T[]) : []);
 
 const FALLBACK_COVER =
-  "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1600&q=80";
+  "https://res.cloudinary.com/dzevugvgg/image/upload/v1779640606/lg-travels/site/images/1488646953014-85cb44e25828.jpg";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 

@@ -23,7 +23,7 @@ export default async function BlogPage() {
         eyebrow="The Journal"
         title="Stories & inspiration from the road"
         description="Guides, ideas and behind-the-scenes from our travel designers."
-        image="https://images.unsplash.com/photo-1452421822248-d4c2b47f0c81?auto=format&fit=crop&w=2000&q=80"
+        image="https://res.cloudinary.com/dzevugvgg/image/upload/v1779640595/lg-travels/site/images/1452421822248-d4c2b47f0c81.jpg"
         crumbs={[{ label: "Blog" }]}
       />
 
