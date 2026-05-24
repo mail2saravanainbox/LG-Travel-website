@@ -7,6 +7,7 @@ import { Gallery } from "@/components/home/gallery";
 import { Newsletter } from "@/components/home/newsletter";
 import { SearchWidget } from "@/components/home/search-widget";
 import { SITE } from "@/constants/site";
+import { fetchSiteSettings } from "@/services/settings.service";
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -24,14 +25,18 @@ const jsonLd = {
   },
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  const site = await fetchSiteSettings();
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Hero />
+      <Hero
+        designerEyebrow={site.hero.designerEyebrow}
+        designerTitle={site.hero.designerTitle}
+      />
 
       {/* Mobile search widget (the hero copy is desktop-only) */}
       <div className="container-lux md:hidden">

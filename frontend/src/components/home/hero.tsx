@@ -24,7 +24,13 @@ const fadeUp: Variants = {
   }),
 };
 
-export function Hero() {
+export function Hero({
+  designerEyebrow = "Your designer is online",
+  designerTitle = "Plan a bespoke trip in minutes",
+}: {
+  designerEyebrow?: string;
+  designerTitle?: string;
+} = {}) {
   return (
     <section className="relative flex min-h-[100svh] items-center overflow-hidden">
       {/* Cinematic video background with poster fallback */}
@@ -147,8 +153,8 @@ export function Hero() {
               </div>
             </div>
             <div className="glass animate-float-slower ml-8 rounded-2xl p-4 text-white shadow-glow">
-              <p className="text-sm text-white/70">Your designer is online</p>
-              <p className="font-display text-base font-semibold">Plan a bespoke trip in minutes</p>
+              <p className="text-sm text-white/70">{designerEyebrow}</p>
+              <p className="font-display text-base font-semibold">{designerTitle}</p>
             </div>
           </div>
         </motion.div>

@@ -28,6 +28,9 @@ export function SettingsPanel() {
   function updateSocial(key: keyof SiteSettings["social"], value: string) {
     setSettings((s) => (s ? { ...s, social: { ...s.social, [key]: value } } : s));
   }
+  function updateHero(key: keyof SiteSettings["hero"], value: string) {
+    setSettings((s) => (s ? { ...s, hero: { ...s.hero, [key]: value } } : s));
+  }
 
   async function save(e: React.FormEvent) {
     e.preventDefault();
@@ -102,6 +105,27 @@ export function SettingsPanel() {
         <div>
           <Label>Full address</Label>
           <Textarea rows={2} value={settings.address} onChange={(e) => update("address", e.target.value)} />
+        </div>
+      </fieldset>
+
+      <fieldset className="space-y-4">
+        <legend className="text-xs font-semibold uppercase tracking-wider text-navy-700">Homepage hero — floating card</legend>
+        <p className="text-xs text-ink/50">
+          The small glass card on the right of the hero (above &ldquo;Plan Your Trip&rdquo;).
+        </p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <Label>Eyebrow line (small grey text)</Label>
+            <Input value={settings.hero.designerEyebrow}
+              onChange={(e) => updateHero("designerEyebrow", e.target.value)}
+              placeholder="Your designer is online" />
+          </div>
+          <div>
+            <Label>Main line (bold white text)</Label>
+            <Input value={settings.hero.designerTitle}
+              onChange={(e) => updateHero("designerTitle", e.target.value)}
+              placeholder="Plan a bespoke trip in minutes" />
+          </div>
         </div>
       </fieldset>
 

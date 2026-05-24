@@ -20,6 +20,11 @@ export interface SiteSettings {
   };
   /** When false, the public Packages page hides the International section. */
   internationalEnabled: boolean;
+  /** Editable text in the homepage hero's floating "designer" card. */
+  hero: {
+    designerEyebrow: string;
+    designerTitle: string;
+  };
 }
 
 /** Plain-object snapshot of the SITE constant, used as the fallback. */
@@ -34,6 +39,10 @@ const DEFAULTS: SiteSettings = {
   address: SITE.address,
   social: { ...SITE.social },
   internationalEnabled: true,
+  hero: {
+    designerEyebrow: "Your designer is online",
+    designerTitle: "Plan a bespoke trip in minutes",
+  },
 };
 
 /**
@@ -48,6 +57,7 @@ export async function fetchSiteSettings(): Promise<SiteSettings> {
       ...DEFAULTS,
       ...data,
       social: { ...DEFAULTS.social, ...(data.social ?? {}) },
+      hero: { ...DEFAULTS.hero, ...(data.hero ?? {}) },
     };
   } catch {
     return DEFAULTS;
