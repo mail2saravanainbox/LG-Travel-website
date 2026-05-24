@@ -6,11 +6,14 @@ import {
   Get,
   Injectable,
   Module,
+  NotFoundException,
+  Param,
+  Patch,
   Post,
   UnauthorizedException,
   UseGuards,
 } from "@nestjs/common";
-import { IsString } from "class-validator";
+import { IsEnum, IsOptional, IsString } from "class-validator";
 import * as crypto from "crypto";
 import { PrismaService } from "../../prisma/prisma.service";
 
@@ -59,6 +62,19 @@ class LoginDto {
   @IsString() password!: string;
 }
 
+enum BookingStatusDto {
+  pending = "pending",
+  confirmed = "confirmed",
+  cancelled = "cancelled",
+  completed = "completed",
+  refunded = "refunded",
+}
+
+class UpdateBookingDto {
+  @IsOptional() @IsEnum(BookingStatusDto) status?: BookingStatusDto;
+  @IsOptional() @IsString() notes?: string;
+}
+
 @Injectable()
 export class AdminService {
   constructor(private readonly prisma: PrismaService) {}
@@ -85,6 +101,16 @@ export class AdminService {
   bookings() {
     return this.prisma.booking.findMany({
       orderBy: { createdAt: "desc" },
+      include: { package: { select: { title: true } } },
+    });
+  }
+
+  async updateBooking(reference: string, dto: UpdateBookingDto) {
+    const booking = await this.prisma.booking.findUnique({ where: { reference } });
+    if (!booking) throw new NotFoundException(`Booking "${reference}" not found`);
+    return this.prisma.booking.update({
+      where: { id: booking.id },
+      data: { status: dto.status as never, notes: dto.notes },
       include: { package: { select: { title: true } } },
     });
   }
@@ -120,6 +146,12 @@ export class AdminController {
   @Get("bookings")
   bookings() {
     return this.svc.bookings();
+  }
+
+  @UseGuards(AdminGuard)
+  @Patch("bookings/:reference")
+  updateBooking(@Param("reference") reference: string, @Body() dto: UpdateBookingDto) {
+    return this.svc.updateBooking(reference, dto);
   }
 
   @UseGuards(AdminGuard)

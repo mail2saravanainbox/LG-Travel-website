@@ -18,9 +18,12 @@ export interface AdminBooking {
   total: string;
   currency: string;
   status: string;
+  notes?: string | null;
   createdAt: string;
   package?: { title: string } | null;
 }
+
+export type BookingStatus = "pending" | "confirmed" | "cancelled" | "completed" | "refunded";
 
 export interface AdminLead {
   id: string;
@@ -237,3 +240,10 @@ export const adminUpdateTestimonial = (
 
 export const adminDeleteTestimonial = (token: string, id: string) =>
   apiDelete<{ deleted: boolean; id: string }>(`/testimonials/${id}`, token);
+
+/** Update a booking's status and/or internal notes (admin-only). */
+export const adminUpdateBooking = (
+  token: string,
+  reference: string,
+  payload: { status?: BookingStatus; notes?: string },
+) => apiPatch<AdminBooking>(`/admin/bookings/${reference}`, payload, token);

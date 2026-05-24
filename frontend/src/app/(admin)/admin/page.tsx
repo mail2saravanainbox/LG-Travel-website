@@ -25,6 +25,7 @@ import { PackagesPanel } from "@/components/admin/packages-panel";
 import { BlogPanel } from "@/components/admin/blog-panel";
 import { DestinationsPanel } from "@/components/admin/destinations-panel";
 import { TestimonialsPanel } from "@/components/admin/testimonials-panel";
+import { BookingsTable } from "@/components/admin/bookings-table";
 import { cn, formatCurrency, formatDate } from "@/lib/utils";
 
 type Tab =
@@ -169,18 +170,11 @@ export default function AdminDashboard() {
         ) : (
           <div className="mt-4 overflow-hidden rounded-2xl border border-navy-700/8 bg-white shadow-soft">
             {tab === "bookings" ? (
-              <Table
-                head={["Reference", "Package", "Guest", "Travellers", "Total", "Status", "Date"]}
-                rows={bookings.map((b) => [
-                  b.reference,
-                  b.package?.title ?? "—",
-                  `${b.leadName} · ${b.leadEmail}`,
-                  String(b.travelers),
-                  formatCurrency(Number(b.total), b.currency),
-                  <StatusPill key={b.id} status={b.status} />,
-                  formatDate(b.createdAt),
-                ])}
-                empty="No bookings yet."
+              <BookingsTable
+                bookings={bookings}
+                onUpdated={(b) =>
+                  setBookings((prev) => prev.map((x) => (x.reference === b.reference ? b : x)))
+                }
               />
             ) : (
               <Table
