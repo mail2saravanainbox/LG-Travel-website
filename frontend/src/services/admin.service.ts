@@ -181,3 +181,37 @@ export const adminUpdateBlogPost = (
 /** Delete a blog post by slug (admin-only). */
 export const adminDeleteBlogPost = (token: string, slug: string) =>
   apiDelete<{ deleted: boolean; slug: string }>(`/blog/${slug}`, token);
+
+export interface NewDestinationInput {
+  name: string;
+  slug?: string;
+  country: string;
+  continent: string;
+  tagline?: string;
+  description?: string;
+  heroImage?: string;
+  gallery?: string[];
+  startingPrice?: number;
+  currency?: string;
+  rating?: number;
+  reviewCount?: number;
+  bestSeason?: string;
+  highlights?: string[];
+  isFeatured?: boolean;
+}
+
+/** Create a destination (admin-only). */
+export const adminCreateDestination = (token: string, payload: NewDestinationInput) =>
+  apiPost<{ id: string; slug: string; name: string }>("/destinations", payload, token);
+
+/** Update a destination by slug (admin-only). */
+export const adminUpdateDestination = (
+  token: string,
+  slug: string,
+  payload: Partial<NewDestinationInput>,
+) =>
+  apiPatch<{ id: string; slug: string; name: string }>(`/destinations/${slug}`, payload, token);
+
+/** Delete a destination by slug (admin-only). Refused by the API if it has linked packages. */
+export const adminDeleteDestination = (token: string, slug: string) =>
+  apiDelete<{ deleted: boolean; slug: string }>(`/destinations/${slug}`, token);
