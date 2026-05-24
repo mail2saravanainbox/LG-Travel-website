@@ -21,6 +21,11 @@ export enum PackageCategoryDto {
   Cultural = "Cultural",
 }
 
+export enum TripTypeDto {
+  international = "international",
+  domestic = "domestic",
+}
+
 export class ItineraryDayDto {
   @IsInt() @Min(1) dayNumber!: number;
   @IsString() @MinLength(1) title!: string;
@@ -49,6 +54,7 @@ export class CreatePackageDto {
 
   @IsOptional() @IsString() groupSize?: string;
   @IsOptional() @IsEnum(PackageCategoryDto) category?: PackageCategoryDto;
+  @IsOptional() @IsEnum(TripTypeDto) tripType?: TripTypeDto;
 
   @IsOptional() @IsArray() @IsString({ each: true }) highlights?: string[];
   @IsOptional() @IsArray() @IsString({ each: true }) inclusions?: string[];

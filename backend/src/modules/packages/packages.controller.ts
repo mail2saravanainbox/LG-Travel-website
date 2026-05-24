@@ -23,8 +23,9 @@ export class PackagesController {
     @Query("category") category?: string,
     @Query("featured") featured?: string,
     @Query("sort") sort?: string,
+    @Query("tripType") tripType?: string,
   ) {
-    return this.service.findAll({ category, featured, sort });
+    return this.service.findAll({ category, featured, sort, tripType });
   }
 
   // Admin-only: create a new package (with optional itinerary).

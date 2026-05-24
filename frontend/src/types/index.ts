@@ -35,6 +35,8 @@ export interface ItineraryDay {
   stay?: string;
 }
 
+export type TripType = "international" | "domestic";
+
 export interface TourPackage {
   id: string;
   slug: string;
@@ -54,6 +56,7 @@ export interface TourPackage {
   reviewCount: number;
   groupSize: string;
   category: PackageCategory;
+  tripType?: TripType;
   highlights: string[];
   inclusions: string[];
   exclusions: string[];

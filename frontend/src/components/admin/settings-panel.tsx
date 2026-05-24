@@ -105,6 +105,24 @@ export function SettingsPanel() {
         </div>
       </fieldset>
 
+      <fieldset className="space-y-3">
+        <legend className="text-xs font-semibold uppercase tracking-wider text-navy-700">Public page sections</legend>
+        <label className="flex items-start gap-3 rounded-xl border border-navy-700/10 bg-mist/40 p-3">
+          <input
+            type="checkbox"
+            checked={settings.internationalEnabled}
+            onChange={(e) => update("internationalEnabled", e.target.checked)}
+            className="mt-0.5 h-4 w-4"
+          />
+          <span className="text-sm">
+            <span className="font-medium text-navy-900">Show International trips section</span>
+            <span className="block text-ink/55">
+              When off, the Packages page hides the International section — visitors only see Domestic trips.
+            </span>
+          </span>
+        </label>
+      </fieldset>
+
       <fieldset className="space-y-4">
         <legend className="text-xs font-semibold uppercase tracking-wider text-navy-700">Social links</legend>
         <div className="grid gap-4 sm:grid-cols-2">

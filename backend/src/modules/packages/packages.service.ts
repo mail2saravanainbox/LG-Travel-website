@@ -51,6 +51,7 @@ export class PackagesService {
         currency: dto.currency ?? "INR",
         groupSize: dto.groupSize,
         category: (dto.category ?? "Luxury") as never,
+        tripType: (dto.tripType ?? "international") as never,
         highlights: dto.highlights ?? [],
         inclusions: dto.inclusions ?? [],
         exclusions: dto.exclusions ?? [],
@@ -125,6 +126,7 @@ export class PackagesService {
           currency: dto.currency,
           groupSize: dto.groupSize,
           category: dto.category as never,
+          tripType: dto.tripType as never,
           highlights: dto.highlights,
           inclusions: dto.inclusions,
           exclusions: dto.exclusions,
@@ -166,7 +168,7 @@ export class PackagesService {
     return { deleted: true, slug };
   }
 
-  findAll(params: { category?: string; featured?: string; sort?: string }) {
+  findAll(params: { category?: string; featured?: string; sort?: string; tripType?: string }) {
     let orderBy: Prisma.PackageOrderByWithRelationInput = { isFeatured: "desc" };
     if (params.sort === "price-asc") orderBy = { price: "asc" };
     else if (params.sort === "price-desc") orderBy = { price: "desc" };
@@ -177,6 +179,7 @@ export class PackagesService {
         isActive: true,
         ...(params.category ? { category: params.category as never } : {}),
         ...(params.featured === "true" ? { isFeatured: true } : {}),
+        ...(params.tripType ? { tripType: params.tripType as never } : {}),
       },
       orderBy,
     });

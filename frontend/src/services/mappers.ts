@@ -63,6 +63,7 @@ export function mapPackage(p: any): TourPackage {
     reviewCount: p.reviewCount ?? 0,
     groupSize: p.groupSize ?? "",
     category: p.category,
+    tripType: (p.tripType ?? "international") as "international" | "domestic",
     highlights: arr<string>(p.highlights),
     inclusions: arr<string>(p.inclusions),
     exclusions: arr<string>(p.exclusions),

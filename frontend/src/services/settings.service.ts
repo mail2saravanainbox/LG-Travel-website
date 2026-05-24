@@ -18,6 +18,8 @@ export interface SiteSettings {
     linkedin: string;
     youtube: string;
   };
+  /** When false, the public Packages page hides the International section. */
+  internationalEnabled: boolean;
 }
 
 /** Plain-object snapshot of the SITE constant, used as the fallback. */
@@ -31,6 +33,7 @@ const DEFAULTS: SiteSettings = {
   addressLabel: SITE.addressLabel,
   address: SITE.address,
   social: { ...SITE.social },
+  internationalEnabled: true,
 };
 
 /**

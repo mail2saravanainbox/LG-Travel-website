@@ -27,6 +27,11 @@ enum PackageCategory {
   Cultural
 }
 
+enum TripType {
+  international
+  domestic
+}
+
 enum BookingStatus {
   pending
   confirmed
@@ -124,6 +129,7 @@ model Package {
   reviewCount    Int             @default(0)
   groupSize      String?
   category       PackageCategory @default(Luxury)
+  tripType       TripType        @default(international)
   highlights     Json            @default("[]")
   inclusions     Json            @default("[]")
   exclusions     Json            @default("[]")

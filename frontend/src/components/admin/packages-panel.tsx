@@ -122,7 +122,10 @@ export function PackagesPanel() {
               <div className="p-4">
                 <p className="truncate font-display text-sm font-bold text-navy-900">{p.title}</p>
                 <p className="mt-0.5 text-xs text-ink/50">
-                  {p.category} · {p.durationDays}D/{p.durationNights}N
+                  <span className={p.tripType === "domestic" ? "text-emerald-600" : "text-navy-600"}>
+                    {p.tripType === "domestic" ? "🇮🇳 Domestic" : "🌍 International"}
+                  </span>
+                  {" · "}{p.category} · {p.durationDays}D/{p.durationNights}N
                 </p>
                 <div className="mt-2 flex items-center justify-between">
                   <span className="text-sm font-semibold text-navy-800">

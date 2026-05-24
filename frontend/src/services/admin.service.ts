@@ -130,6 +130,7 @@ export interface NewPackageInput {
   currency?: string;
   groupSize?: string;
   category?: string;
+  tripType?: "international" | "domestic";
   highlights?: string[];
   inclusions?: string[];
   exclusions?: string[];

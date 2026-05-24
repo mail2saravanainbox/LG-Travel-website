@@ -11,7 +11,7 @@ import {
   MinLength,
   ValidateNested,
 } from "class-validator";
-import { ItineraryDayDto, PackageCategoryDto } from "./create-package.dto";
+import { ItineraryDayDto, PackageCategoryDto, TripTypeDto } from "./create-package.dto";
 
 /** All fields optional — only the keys you send get changed. */
 export class UpdatePackageDto {
@@ -34,6 +34,7 @@ export class UpdatePackageDto {
 
   @IsOptional() @IsString() groupSize?: string;
   @IsOptional() @IsEnum(PackageCategoryDto) category?: PackageCategoryDto;
+  @IsOptional() @IsEnum(TripTypeDto) tripType?: TripTypeDto;
 
   @IsOptional() @IsArray() @IsString({ each: true }) highlights?: string[];
   @IsOptional() @IsArray() @IsString({ each: true }) inclusions?: string[];

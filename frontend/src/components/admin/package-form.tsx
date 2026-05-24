@@ -47,6 +47,9 @@ export function PackageForm({
   const [title, setTitle] = useState(initial?.title ?? "");
   const [slug, setSlug] = useState(initial?.slug ?? "");
   const [category, setCategory] = useState<string>(initial?.category ?? "Luxury");
+  const [tripType, setTripType] = useState<"international" | "domestic">(
+    initial?.tripType ?? "international",
+  );
   const [location, setLocation] = useState(initial?.location ?? "");
   const [destinationSlug, setDestinationSlug] = useState(initial?.destinationSlug ?? "");
   const [summary, setSummary] = useState(initial?.summary ?? "");
@@ -142,6 +145,7 @@ export function PackageForm({
         title,
         slug: slug || undefined,
         category,
+        tripType,
         location: location || undefined,
         destinationSlug: destinationSlug || undefined,
         summary: summary || undefined,
@@ -239,6 +243,14 @@ export function PackageForm({
           <Label>Category</Label>
           <select className={inputClass} value={category} onChange={(e) => setCategory(e.target.value)}>
             {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+          </select>
+        </div>
+        <div>
+          <Label>Trip type</Label>
+          <select className={inputClass} value={tripType}
+            onChange={(e) => setTripType(e.target.value as "international" | "domestic")}>
+            <option value="international">International</option>
+            <option value="domestic">Domestic</option>
           </select>
         </div>
         <div>
