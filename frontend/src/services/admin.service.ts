@@ -215,3 +215,25 @@ export const adminUpdateDestination = (
 /** Delete a destination by slug (admin-only). Refused by the API if it has linked packages. */
 export const adminDeleteDestination = (token: string, slug: string) =>
   apiDelete<{ deleted: boolean; slug: string }>(`/destinations/${slug}`, token);
+
+export interface NewTestimonialInput {
+  name: string;
+  quote: string;
+  location?: string;
+  trip?: string;
+  avatarUrl?: string;
+  rating?: number;
+  isFeatured?: boolean;
+}
+
+export const adminCreateTestimonial = (token: string, payload: NewTestimonialInput) =>
+  apiPost<{ id: string; name: string }>("/testimonials", payload, token);
+
+export const adminUpdateTestimonial = (
+  token: string,
+  id: string,
+  payload: Partial<NewTestimonialInput>,
+) => apiPatch<{ id: string; name: string }>(`/testimonials/${id}`, payload, token);
+
+export const adminDeleteTestimonial = (token: string, id: string) =>
+  apiDelete<{ deleted: boolean; id: string }>(`/testimonials/${id}`, token);
