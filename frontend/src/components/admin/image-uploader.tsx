@@ -49,9 +49,11 @@ export function ImageUploader({ folder = "lg-travels" }: { folder?: string }) {
 
   return (
     <div className="rounded-2xl border border-navy-700/8 bg-white p-6 shadow-soft">
-      <h2 className="font-display text-lg font-bold text-navy-900">Media library</h2>
+      <h2 className="font-display text-lg font-bold text-navy-900">Photo library</h2>
       <p className="mt-1 text-sm text-ink/50">
-        Upload images to Cloudinary, then copy the URL or public ID into your content.
+        Upload photos here to use them anywhere on the website. After a photo
+        uploads, click <span className="font-medium text-ink/70">Copy image link</span> and
+        paste it into the image field of a package, destination or blog post.
       </p>
 
       <label
@@ -65,7 +67,7 @@ export function ImageUploader({ folder = "lg-travels" }: { folder?: string }) {
         <span className="text-sm font-medium text-navy-800">
           {busy ? "Uploading…" : "Click to choose images"}
         </span>
-        <span className="text-xs text-ink/40">PNG, JPG, WebP — uploaded to /{folder}</span>
+        <span className="text-xs text-ink/40">PNG, JPG or WebP · you can select several at once</span>
         <input
           ref={inputRef}
           type="file"
@@ -105,7 +107,7 @@ export function ImageUploader({ folder = "lg-travels" }: { folder?: string }) {
                     </>
                   ) : (
                     <>
-                      <Copy className="h-3.5 w-3.5" /> Copy URL
+                      <Copy className="h-3.5 w-3.5" /> Copy image link
                     </>
                   )}
                 </button>

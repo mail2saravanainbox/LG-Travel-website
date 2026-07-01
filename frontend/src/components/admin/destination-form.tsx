@@ -12,6 +12,7 @@ import {
 import { useAdmin } from "@/store/admin";
 import type { Destination } from "@/types";
 import { Button } from "@/components/ui/button";
+import { AlertDialog } from "@/components/ui/alert-dialog";
 import { Input, Label, Textarea } from "@/components/ui/input";
 
 const CONTINENTS = ["Asia", "Europe", "Middle East", "Africa", "Americas", "Oceania"];
@@ -115,33 +116,8 @@ export function DestinationForm({
     }
   }
 
-  if (doneSlug) {
-    return (
-      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-8 text-center">
-        <p className="font-display text-lg font-bold text-emerald-800">
-          {isEdit ? "Destination updated ✓" : "Destination created ✓"}
-        </p>
-        <p className="mt-2 text-sm text-emerald-700">The site updates within ~30 seconds:</p>
-        <a
-          href={`/destinations/${doneSlug}`}
-          target="_blank"
-          rel="noreferrer"
-          className="mt-1 inline-block font-medium text-navy-700 underline"
-        >
-          /destinations/{doneSlug}
-        </a>
-        {!isEdit && (
-          <div className="mt-5">
-            <Button variant="gold" onClick={() => setDoneSlug(null)}>
-              Add another destination
-            </Button>
-          </div>
-        )}
-      </div>
-    );
-  }
-
   return (
+    <>
     <form
       onSubmit={submit}
       className="space-y-5 rounded-2xl border border-navy-700/8 bg-white p-6 shadow-soft"
@@ -267,5 +243,12 @@ export function DestinationForm({
         {submitting ? "Saving…" : isEdit ? "Save changes" : "Create destination"}
       </Button>
     </form>
+    <AlertDialog
+      open={!!doneSlug}
+      title={isEdit ? "Changes saved successfully" : "Destination created successfully"}
+      description={`It goes live on the website within ~30 seconds, at /destinations/${doneSlug ?? ""}.`}
+      onAction={() => setDoneSlug(null)}
+    />
+    </>
   );
 }

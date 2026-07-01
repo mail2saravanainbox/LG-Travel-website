@@ -80,11 +80,11 @@ export default function AdminDashboard() {
     );
   }
 
-  const cards = [
-    { label: "Total bookings", value: String(stats?.totalBookings ?? 0), icon: CalendarCheck },
-    { label: "Revenue", value: formatCurrency(stats?.totalRevenue ?? 0, "INR"), icon: IndianRupee },
-    { label: "Leads", value: String(stats?.totalLeads ?? 0), icon: MessageSquare },
-    { label: "Packages", value: String(stats?.totalPackages ?? 0), icon: Package },
+  const cards: { label: string; value: string; icon: typeof CalendarCheck; goTo: Tab }[] = [
+    { label: "Total bookings", value: String(stats?.totalBookings ?? 0), icon: CalendarCheck, goTo: "bookings" },
+    { label: "Revenue", value: formatCurrency(stats?.totalRevenue ?? 0, "INR"), icon: IndianRupee, goTo: "bookings" },
+    { label: "Leads", value: String(stats?.totalLeads ?? 0), icon: MessageSquare, goTo: "leads" },
+    { label: "Packages", value: String(stats?.totalPackages ?? 0), icon: Package, goTo: "packages" },
   ];
 
   return (
@@ -115,14 +115,19 @@ export default function AdminDashboard() {
 
         {/* Stat cards */}
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {cards.map(({ label, value, icon: Icon }) => (
-            <div key={label} className="rounded-2xl border border-navy-700/8 bg-white p-5 shadow-soft">
+          {cards.map(({ label, value, icon: Icon, goTo }) => (
+            <button
+              key={label}
+              type="button"
+              onClick={() => setTab(goTo)}
+              className="cursor-pointer rounded-2xl border border-navy-700/8 bg-white p-5 text-left shadow-soft transition-all hover:-translate-y-0.5 hover:border-navy-700/25 hover:shadow-lift focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400/70"
+            >
               <span className="grid h-11 w-11 place-items-center rounded-xl bg-navy-50 text-navy-700">
                 <Icon className="h-5 w-5" />
               </span>
               <p className="mt-4 font-display text-2xl font-bold text-navy-900">{value}</p>
               <p className="text-sm text-ink/50">{label}</p>
-            </div>
+            </button>
           ))}
         </div>
 

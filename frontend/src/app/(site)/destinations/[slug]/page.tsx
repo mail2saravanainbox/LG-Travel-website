@@ -121,10 +121,17 @@ export default async function DestinationDetailPage({
                   </dd>
                 </div>
               </dl>
-              <Button href="/packages" variant="gold" size="lg" className="mt-6 w-full">
-                View packages
-              </Button>
-              <Button href="/contact" variant="outline" size="lg" className="mt-3 w-full">
+              {relatedPackages.length > 0 && (
+                <Button href="#destination-packages" variant="gold" size="lg" className="mt-6 w-full">
+                  View packages
+                </Button>
+              )}
+              <Button
+                href="/contact"
+                variant="outline"
+                size="lg"
+                className={`w-full ${relatedPackages.length > 0 ? "mt-3" : "mt-6"}`}
+              >
                 Plan a bespoke trip
               </Button>
             </div>
@@ -133,7 +140,7 @@ export default async function DestinationDetailPage({
       </section>
 
       {relatedPackages.length > 0 && (
-        <section className="bg-mist py-16 md:py-24">
+        <section id="destination-packages" className="scroll-mt-24 bg-mist py-16 md:py-24">
           <div className="container-lux">
             <SectionHeading
               eyebrow="Curated trips"

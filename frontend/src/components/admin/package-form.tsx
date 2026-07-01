@@ -14,6 +14,7 @@ import { fetchDestinations } from "@/services/destinations.service";
 import { useAdmin } from "@/store/admin";
 import type { TourPackage } from "@/types";
 import { Button } from "@/components/ui/button";
+import { AlertDialog } from "@/components/ui/alert-dialog";
 import { Input, Label, Textarea } from "@/components/ui/input";
 
 const CATEGORIES = ["Luxury", "Honeymoon", "Adventure", "Family", "Wellness", "Cultural"];
@@ -185,35 +186,8 @@ export function PackageForm({
     }
   }
 
-  if (doneSlug) {
-    return (
-      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-8 text-center">
-        <p className="font-display text-lg font-bold text-emerald-800">
-          {isEdit ? "Changes saved ✓" : "Package created ✓"}
-        </p>
-        <p className="mt-2 text-sm text-emerald-700">
-          The site updates within ~30 seconds at:
-        </p>
-        <a
-          href={`/packages/${doneSlug}`}
-          target="_blank"
-          rel="noreferrer"
-          className="mt-1 inline-block font-medium text-navy-700 underline"
-        >
-          /packages/{doneSlug}
-        </a>
-        {!isEdit && (
-          <div className="mt-5">
-            <Button variant="gold" onClick={() => setDoneSlug(null)}>
-              Add another package
-            </Button>
-          </div>
-        )}
-      </div>
-    );
-  }
-
   return (
+    <>
     <form
       onSubmit={submit}
       className="space-y-6 rounded-2xl border border-navy-700/8 bg-white p-6 shadow-soft"
@@ -413,5 +387,12 @@ export function PackageForm({
         {submitting ? "Saving…" : isEdit ? "Save changes" : "Create package"}
       </Button>
     </form>
+    <AlertDialog
+      open={!!doneSlug}
+      title={isEdit ? "Changes saved successfully" : "Package created successfully"}
+      description={`It goes live on the website within ~30 seconds, at /packages/${doneSlug ?? ""}.`}
+      onAction={() => setDoneSlug(null)}
+    />
+    </>
   );
 }

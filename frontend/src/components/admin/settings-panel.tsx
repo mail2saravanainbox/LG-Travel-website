@@ -7,6 +7,7 @@ import { adminSaveSiteSettings } from "@/services/admin.service";
 import { useAdmin } from "@/store/admin";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
+import { AlertDialog } from "@/components/ui/alert-dialog";
 
 export function SettingsPanel() {
   const token = useAdmin((s) => s.token);
@@ -210,13 +211,17 @@ export function SettingsPanel() {
       </fieldset>
 
       {error && <p className="text-sm text-rose-500">{error}</p>}
-      {savedAt && !error && (
-        <p className="text-sm font-medium text-emerald-600">Saved ✓ — changes go live within ~30 seconds.</p>
-      )}
 
       <Button type="submit" variant="gold" size="lg" disabled={saving}>
         {saving ? "Saving…" : "Save settings"}
       </Button>
+
+      <AlertDialog
+        open={!!savedAt && !error}
+        title="Changes saved successfully"
+        description="Your changes go live on the website within ~30 seconds."
+        onAction={() => setSavedAt(null)}
+      />
     </form>
   );
 }

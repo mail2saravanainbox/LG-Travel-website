@@ -12,6 +12,7 @@ import {
 import { useAdmin } from "@/store/admin";
 import type { BlogPost } from "@/types";
 import { Button } from "@/components/ui/button";
+import { AlertDialog } from "@/components/ui/alert-dialog";
 import { Input, Label, Textarea } from "@/components/ui/input";
 
 const inputClass =
@@ -84,33 +85,8 @@ export function BlogForm({ initial, onSaved }: { initial?: BlogPost; onSaved?: (
     }
   }
 
-  if (doneSlug) {
-    return (
-      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-8 text-center">
-        <p className="font-display text-lg font-bold text-emerald-800">
-          {isEdit ? "Post updated ✓" : "Post published ✓"}
-        </p>
-        <p className="mt-2 text-sm text-emerald-700">It appears on the journal within ~30 seconds:</p>
-        <a
-          href={`/blog/${doneSlug}`}
-          target="_blank"
-          rel="noreferrer"
-          className="mt-1 inline-block font-medium text-navy-700 underline"
-        >
-          /blog/{doneSlug}
-        </a>
-        {!isEdit && (
-          <div className="mt-5">
-            <Button variant="gold" onClick={() => setDoneSlug(null)}>
-              Write another post
-            </Button>
-          </div>
-        )}
-      </div>
-    );
-  }
-
   return (
+    <>
     <form onSubmit={submit} className="space-y-5 rounded-2xl border border-navy-700/8 bg-white p-6 shadow-soft">
       <div>
         <h2 className="font-display text-lg font-bold text-navy-900">
@@ -185,5 +161,12 @@ export function BlogForm({ initial, onSaved }: { initial?: BlogPost; onSaved?: (
         {submitting ? "Saving…" : isEdit ? "Save changes" : "Publish post"}
       </Button>
     </form>
+    <AlertDialog
+      open={!!doneSlug}
+      title={isEdit ? "Changes saved successfully" : "Post published successfully"}
+      description={`It appears on the journal within ~30 seconds, at /blog/${doneSlug ?? ""}.`}
+      onAction={() => setDoneSlug(null)}
+    />
+    </>
   );
 }
