@@ -63,6 +63,21 @@
   border-color: hsl(220 20% 90%);
 }
 
+/* Tailwind v4 sets buttons to `cursor: default`; restore the hand/pointer on
+   every interactive control so clickable items feel consistent site-wide. */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+label[for],
+summary,
+select,
+a[href] {
+  cursor: pointer;
+}
+button:disabled,
+[role="button"][aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
