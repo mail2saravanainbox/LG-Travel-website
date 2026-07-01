@@ -1,0 +1,58 @@
+# LG Travels — Render Blueprint (backend API + PostgreSQL)
+# Deploy: Render Dashboard → New → Blueprint → connect this repo.
+# The frontend is deployed separately on Vercel.
+#
+# NOTE on plans: `free` is used below so nothing bills by surprise. For a real
+# business launch you should upgrade both to paid:
+#   - Free web services SPIN DOWN after ~15 min idle (first request then takes
+#     ~50s to wake). Upgrade the web service to `starter` ($7/mo) to keep it warm.
+#   - Free Postgres is deleted ~30 days after creation. Upgrade the DB to a paid
+#     plan to keep your data. Change `plan: free` → `plan: starter` for each.
+
+databases:
+  - name: lg-travels-db
+    databaseName: lg_travels
+    plan: free
+    region: singapore # closest Render region to India
+
+services:
+  - type: web
+    name: lg-travels-api
+    runtime: node
+    rootDir: backend
+    region: singapore
+    plan: free
+    # postinstall runs `prisma generate`; then compile; then sync schema to the DB.
+    # No `--accept-data-loss`: if a future schema change would drop data the deploy
+    # fails loudly instead of silently wiping the table.
+    buildCommand: npm install && npm run build && npx prisma db push
+    startCommand: npm run start:prod
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: lg-travels-db
+          property: connectionString
+      - key: NODE_ENV
+        value: production
+      # Comma-separated allowed CORS origins. Set to your live frontend URLs:
+      #   https://lgtravels.in,https://www.lgtravels.in,https://<vercel-app>.vercel.app
+      - key: FRONTEND_URL
+        sync: false
+      # Admin panel credentials (reuse your existing ones).
+      - key: ADMIN_USERNAME
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: ADMIN_TOKEN_SECRET
+        generateValue: true # Render generates a strong secret automatically
+      # Clerk secret key (verifies customer session JWTs on POST /api/bookings).
+      - key: CLERK_SECRET_KEY
+        sync: false
+      # Cloudinary (signed direct uploads from the admin Media tab).
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false

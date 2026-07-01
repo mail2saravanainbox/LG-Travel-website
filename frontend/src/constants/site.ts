@@ -4,7 +4,7 @@ export const SITE = {
   tagline: "Luxury Travel, Curated for You",
   description:
     "LG Travels designs cinematic, bespoke luxury journeys across the globe — private resorts, drone-worthy landscapes and seamless, concierge-grade booking.",
-  url: "https://lgtravels.com",
+  url: "https://lgtravels.in",
   ogImage:
     "https://res.cloudinary.com/dzevugvgg/image/upload/v1779640600/lg-travels/site/images/1507525428034-b723cf961d3e.jpg",
   email: "support@makevoyage.com",
