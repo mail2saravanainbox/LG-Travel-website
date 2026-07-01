@@ -25,7 +25,9 @@ services:
     # postinstall runs `prisma generate`; then compile; then sync schema to the DB.
     # No `--accept-data-loss`: if a future schema change would drop data the deploy
     # fails loudly instead of silently wiping the table.
-    buildCommand: npm install && npm run build && npx prisma db push
+    # --include=dev is required because NODE_ENV=production would otherwise skip
+    # devDependencies (the `nest` CLI, prisma, typescript) that the build needs.
+    buildCommand: npm install --include=dev && npm run build && npx prisma db push
     startCommand: npm run start:prod
     healthCheckPath: /api/health
     envVars:
