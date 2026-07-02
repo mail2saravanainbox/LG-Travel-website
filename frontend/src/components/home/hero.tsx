@@ -45,7 +45,10 @@ export function Hero({
 } = {}) {
   return (
     <section className="relative flex min-h-[100svh] items-center overflow-hidden">
-      {/* Cinematic video background with poster fallback */}
+      {/* Cinematic video background with poster fallback.
+          suppressHydrationWarning: React sets `muted` as a DOM property, not an
+          attribute, so the server HTML and client differ on it — the source of
+          the homepage's hydration mismatch (React #418). */}
       <video
         className="absolute inset-0 h-full w-full object-cover"
         autoPlay
@@ -54,6 +57,7 @@ export function Hero({
         playsInline
         preload="metadata"
         poster={POSTER}
+        suppressHydrationWarning
       >
         {VIDEO_SOURCES.map((src) => (
           <source key={src} src={src} type="video/mp4" />
