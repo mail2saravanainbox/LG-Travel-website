@@ -1,7 +1,7 @@
 import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { PrismaService } from "../../prisma/prisma.service";
-import { CreatePackageDto } from "./create-package.dto";
+import { CreatePackageDto, PackageCategoryDto, TripTypeDto } from "./create-package.dto";
 import { UpdatePackageDto } from "./update-package.dto";
 
 /** "Bali Honeymoon Escape" → "bali-honeymoon-escape" */
@@ -174,12 +174,24 @@ export class PackagesService {
     else if (params.sort === "price-desc") orderBy = { price: "desc" };
     else if (params.sort === "rating") orderBy = { rating: "desc" };
 
+    // Only apply the enum filters when the value is a real member — Prisma throws
+    // (→ 500) on any unknown enum value, so an invalid/mistyped/lowercased query
+    // param (?category=luxury) is silently ignored rather than crashing the endpoint.
+    const category = (Object.values(PackageCategoryDto) as string[]).includes(
+      params.category ?? "",
+    )
+      ? params.category
+      : undefined;
+    const tripType = (Object.values(TripTypeDto) as string[]).includes(params.tripType ?? "")
+      ? params.tripType
+      : undefined;
+
     return this.prisma.package.findMany({
       where: {
         isActive: true,
-        ...(params.category ? { category: params.category as never } : {}),
+        ...(category ? { category: category as never } : {}),
         ...(params.featured === "true" ? { isFeatured: true } : {}),
-        ...(params.tripType ? { tripType: params.tripType as never } : {}),
+        ...(tripType ? { tripType: tripType as never } : {}),
       },
       orderBy,
     });

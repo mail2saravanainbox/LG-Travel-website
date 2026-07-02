@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -24,12 +25,17 @@ export function ContactForm() {
     register,
     handleSubmit,
     setError,
-    formState: { errors, isSubmitting, isSubmitSuccessful },
+    formState: { errors, isSubmitting },
   } = useForm<FormValues>({ resolver: zodResolver(schema) });
+  // Show the success screen only after the enquiry actually persists — react-hook-form's
+  // `isSubmitSuccessful` is true whenever onSubmit resolves, even on a caught API failure,
+  // which would falsely confirm a lost lead.
+  const [submitted, setSubmitted] = useState(false);
 
   async function onSubmit(values: FormValues) {
     try {
       await createInquiry(values);
+      setSubmitted(true);
     } catch (err) {
       // Surface a friendly error; the API validates server-side too.
       setError("root", {
@@ -38,7 +44,7 @@ export function ContactForm() {
     }
   }
 
-  if (isSubmitSuccessful) {
+  if (submitted) {
     return (
       <div className="grid place-items-center rounded-3xl border border-emerald-200 bg-emerald-50 p-12 text-center">
         <CheckCircle2 className="h-12 w-12 text-emerald-500" />
