@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ImagePlus, Loader2, Plus, Trash2, X } from "lucide-react";
 import {
@@ -12,6 +12,8 @@ import {
 } from "@/services/admin.service";
 import { fetchDestinations } from "@/services/destinations.service";
 import { useAdmin } from "@/store/admin";
+import { useAdminSession } from "@/components/admin/use-admin-session";
+import { AdminFormError } from "@/components/admin/admin-form-error";
 import type { TourPackage } from "@/types";
 import { Button } from "@/components/ui/button";
 import { AlertDialog } from "@/components/ui/alert-dialog";
@@ -37,6 +39,7 @@ export function PackageForm({
   onCreated?: () => void;
 }) {
   const token = useAdmin((s) => s.token);
+  const { requireToken, reportError } = useAdminSession();
   const isEdit = Boolean(initial);
   const editSlug = initial?.slug;
   const [destinations, setDestinations] = useState<{ slug: string; name: string }[]>([]);
@@ -137,7 +140,8 @@ export function PackageForm({
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!token) return;
+    const activeToken = requireToken(setError);
+    if (!activeToken) return;
     setSubmitting(true);
     setError(null);
     setDoneSlug(null);
@@ -170,17 +174,17 @@ export function PackageForm({
       };
       let savedSlug: string;
       if (isEdit && editSlug) {
-        const updated = await adminUpdatePackage(token, editSlug, { ...payload, isActive });
+        const updated = await adminUpdatePackage(activeToken, editSlug, { ...payload, isActive });
         savedSlug = updated.slug;
       } else {
-        const created = await adminCreatePackage(token, payload);
+        const created = await adminCreatePackage(activeToken, payload);
         savedSlug = created.slug;
       }
       setDoneSlug(savedSlug);
       onSaved?.();
       onCreated?.();
     } catch (e) {
-      setError((e as Error).message);
+      reportError(e, setError);
     } finally {
       setSubmitting(false);
     }
@@ -381,7 +385,7 @@ export function PackageForm({
         </div>
       </div>
 
-      {error && <p className="text-sm text-rose-500">{error}</p>}
+      <AdminFormError message={error} />
 
       <Button type="submit" variant="gold" size="lg" disabled={submitting || !title}>
         {submitting ? "Saving…" : isEdit ? "Save changes" : "Create package"}

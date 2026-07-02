@@ -10,6 +10,8 @@ import {
   type NewDestinationInput,
 } from "@/services/admin.service";
 import { useAdmin } from "@/store/admin";
+import { useAdminSession } from "@/components/admin/use-admin-session";
+import { AdminFormError } from "@/components/admin/admin-form-error";
 import type { Destination } from "@/types";
 import { Button } from "@/components/ui/button";
 import { AlertDialog } from "@/components/ui/alert-dialog";
@@ -29,6 +31,7 @@ export function DestinationForm({
   onSaved?: () => void;
 }) {
   const token = useAdmin((s) => s.token);
+  const { requireToken, reportError } = useAdminSession();
   const isEdit = Boolean(initial);
   const editSlug = initial?.slug;
 
@@ -84,7 +87,8 @@ export function DestinationForm({
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!token) return;
+    const activeToken = requireToken(setError);
+    if (!activeToken) return;
     setSubmitting(true);
     setError(null);
     try {
@@ -105,12 +109,12 @@ export function DestinationForm({
       };
       const saved =
         isEdit && editSlug
-          ? await adminUpdateDestination(token, editSlug, payload)
-          : await adminCreateDestination(token, payload);
+          ? await adminUpdateDestination(activeToken, editSlug, payload)
+          : await adminCreateDestination(activeToken, payload);
       setDoneSlug(saved.slug);
       onSaved?.();
     } catch (e) {
-      setError((e as Error).message);
+      reportError(e, setError);
     } finally {
       setSubmitting(false);
     }
@@ -237,7 +241,7 @@ export function DestinationForm({
         </div>
       </div>
 
-      {error && <p className="text-sm text-rose-500">{error}</p>}
+      <AdminFormError message={error} />
 
       <Button type="submit" variant="gold" size="lg" disabled={submitting || !name}>
         {submitting ? "Saving…" : isEdit ? "Save changes" : "Create destination"}

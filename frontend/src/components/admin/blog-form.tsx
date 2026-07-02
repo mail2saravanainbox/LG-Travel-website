@@ -10,6 +10,8 @@ import {
   type NewBlogInput,
 } from "@/services/admin.service";
 import { useAdmin } from "@/store/admin";
+import { useAdminSession } from "@/components/admin/use-admin-session";
+import { AdminFormError } from "@/components/admin/admin-form-error";
 import type { BlogPost } from "@/types";
 import { Button } from "@/components/ui/button";
 import { AlertDialog } from "@/components/ui/alert-dialog";
@@ -25,6 +27,7 @@ const toTags = (v: string) =>
 
 export function BlogForm({ initial, onSaved }: { initial?: BlogPost; onSaved?: () => void }) {
   const token = useAdmin((s) => s.token);
+  const { requireToken, reportError } = useAdminSession();
   const isEdit = Boolean(initial);
   const editSlug = initial?.slug;
 
@@ -58,7 +61,8 @@ export function BlogForm({ initial, onSaved }: { initial?: BlogPost; onSaved?: (
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!token) return;
+    const activeToken = requireToken(setError);
+    if (!activeToken) return;
     setSubmitting(true);
     setError(null);
     try {
@@ -74,12 +78,12 @@ export function BlogForm({ initial, onSaved }: { initial?: BlogPost; onSaved?: (
       };
       const saved =
         isEdit && editSlug
-          ? await adminUpdateBlogPost(token, editSlug, payload)
-          : await adminCreateBlogPost(token, payload);
+          ? await adminUpdateBlogPost(activeToken, editSlug, payload)
+          : await adminCreateBlogPost(activeToken, payload);
       setDoneSlug(saved.slug);
       onSaved?.();
     } catch (e) {
-      setError((e as Error).message);
+      reportError(e, setError);
     } finally {
       setSubmitting(false);
     }
@@ -155,7 +159,7 @@ export function BlogForm({ initial, onSaved }: { initial?: BlogPost; onSaved?: (
         Publish now (uncheck to save as a hidden draft)
       </label>
 
-      {error && <p className="text-sm text-rose-500">{error}</p>}
+      <AdminFormError message={error} />
 
       <Button type="submit" variant="gold" size="lg" disabled={submitting || !title}>
         {submitting ? "Saving…" : isEdit ? "Save changes" : "Publish post"}
