@@ -42,9 +42,26 @@ export function ImageUploader({ folder = "lg-travels" }: { folder?: string }) {
   }
 
   async function copy(text: string) {
-    await navigator.clipboard.writeText(text);
-    setCopied(text);
-    setTimeout(() => setCopied(null), 1500);
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        // Fallback for non-secure contexts / older browsers where the async
+        // Clipboard API is unavailable (otherwise the click silently did nothing).
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+      }
+      setCopied(text);
+      setTimeout(() => setCopied(null), 1500);
+    } catch {
+      setError("Couldn't copy the link — please select and copy it manually.");
+    }
   }
 
   return (

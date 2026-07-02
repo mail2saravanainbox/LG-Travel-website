@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
@@ -20,6 +20,7 @@ import {
   type AdminStats,
 } from "@/services/admin.service";
 import { useAdmin } from "@/store/admin";
+import { Button } from "@/components/ui/button";
 import { ImageUploader } from "@/components/admin/image-uploader";
 import { PackagesPanel } from "@/components/admin/packages-panel";
 import { BlogPanel } from "@/components/admin/blog-panel";
@@ -43,18 +44,20 @@ export default function AdminDashboard() {
   const router = useRouter();
   const { token, username, logout } = useAdmin();
   const [ready, setReady] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [bookings, setBookings] = useState<AdminBooking[]>([]);
   const [leads, setLeads] = useState<AdminLead[]>([]);
   const [tab, setTab] = useState<Tab>("bookings");
 
   // Guard + data load. Zustand persist hydrates after mount, so wait a tick.
-  useEffect(() => {
+  const load = useCallback(() => {
     const t = useAdmin.getState().token;
     if (!t) {
       router.replace("/admin/login");
       return;
     }
+    setLoadError(null);
     Promise.all([getAdminStats(t), getAdminBookings(t), getAdminLeads(t)])
       .then(([s, b, l]) => {
         setStats(s);
@@ -62,16 +65,46 @@ export default function AdminDashboard() {
         setLeads(l);
         setReady(true);
       })
-      .catch(() => {
-        logout();
-        router.replace("/admin/login");
+      .catch((e) => {
+        const msg = e instanceof Error ? e.message : String(e);
+        // Only a genuine auth failure should end the session. A transient 500 on
+        // one endpoint used to log the admin out — now it shows a retryable error.
+        if (/401|unauthor/i.test(msg)) {
+          logout();
+          router.replace("/admin/login");
+        } else {
+          setLoadError(msg || "Couldn't load the dashboard. Please try again.");
+        }
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [router, logout]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    load();
+  }, [load]);
 
   function signOut() {
     logout();
     router.replace("/admin/login");
+  }
+
+  if (loadError && !ready) {
+    return (
+      <div className="grid min-h-screen place-items-center bg-mist px-6">
+        <div className="w-full max-w-md rounded-2xl border border-navy-700/10 bg-white p-8 text-center shadow-soft">
+          <p className="font-display text-lg font-bold text-navy-900">Couldn&apos;t load the dashboard</p>
+          <p className="mt-2 text-sm text-ink/60">{loadError}</p>
+          <div className="mt-5 flex justify-center gap-3">
+            <Button variant="gold" size="sm" onClick={load}>
+              Try again
+            </Button>
+            <Button variant="outline" size="sm" onClick={signOut}>
+              Sign out
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (!ready || !token) {
@@ -242,20 +275,5 @@ function Table({
         </tbody>
       </table>
     </div>
-  );
-}
-
-function StatusPill({ status }: { status: string }) {
-  const map: Record<string, string> = {
-    pending: "bg-amber-100 text-amber-700",
-    confirmed: "bg-emerald-100 text-emerald-700",
-    cancelled: "bg-rose-100 text-rose-700",
-    completed: "bg-navy-100 text-navy-700",
-    refunded: "bg-gray-100 text-gray-600",
-  };
-  return (
-    <span className={cn("rounded-full px-2.5 py-1 text-xs font-medium capitalize", map[status] ?? "bg-gray-100 text-gray-600")}>
-      {status}
-    </span>
   );
 }

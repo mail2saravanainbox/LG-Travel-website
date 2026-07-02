@@ -20,7 +20,9 @@ export class DestinationsService {
     return this.prisma.destination.findMany({
       where: {
         ...(params.featured === "true" ? { isFeatured: true } : {}),
-        ...(params.continent ? { continent: params.continent } : {}),
+        ...(params.continent
+          ? { continent: { equals: params.continent, mode: "insensitive" as const } }
+          : {}),
       },
       orderBy: { name: "asc" },
     });

@@ -51,7 +51,10 @@ export function PackagesPanel() {
   }
 
   async function handleDelete(slug: string, title: string) {
-    if (!token) return;
+    if (!token) {
+      window.alert("Your session has expired — please sign in again.");
+      return;
+    }
     if (!window.confirm(`Delete "${title}"? This cannot be undone.`)) return;
     setDeleting(slug);
     try {

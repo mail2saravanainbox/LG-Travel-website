@@ -35,7 +35,11 @@ export function SettingsPanel() {
 
   async function save(e: React.FormEvent) {
     e.preventDefault();
-    if (!token || !settings) return;
+    if (!settings) return;
+    if (!token) {
+      setError("Your session has expired — please sign in again.");
+      return;
+    }
     setSaving(true);
     setError(null);
     try {

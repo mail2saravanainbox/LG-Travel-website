@@ -59,7 +59,10 @@ export function BookingsTable({
   }
 
   async function save(reference: string) {
-    if (!token) return;
+    if (!token) {
+      window.alert("Your session has expired — please sign in again.");
+      return;
+    }
     setSaving(true);
     setError(null);
     try {

@@ -42,7 +42,7 @@ export function AuthShell({
       </div>
 
       {/* Form side */}
-      <div className="flex items-center justify-center p-6 sm:p-12">
+      <div className="flex items-center justify-center overflow-x-hidden p-6 sm:p-12">
         <div className="w-full max-w-md">
           <div className="lg:hidden">
             <Logo />

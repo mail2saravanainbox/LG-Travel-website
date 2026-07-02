@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { CalendarDays, MapPin, Plane, Search, Users, Wallet } from "lucide-react";
@@ -18,10 +18,17 @@ type TabId = (typeof TABS)[number]["id"];
 export function SearchWidget({ className }: { className?: string }) {
   const router = useRouter();
   const [tab, setTab] = useState<TabId>("packages");
+  // Unique per instance — the hero renders one SearchWidget for desktop and the
+  // page renders another for mobile; sharing one framer-motion layoutId across
+  // both caused a production hydration mismatch (React #418).
+  const uid = useId();
+  const [destination, setDestination] = useState("");
 
   function onSearch(e: React.FormEvent) {
     e.preventDefault();
-    router.push("/packages");
+    // Carry the destination through as a search query instead of discarding it.
+    const q = destination.trim();
+    router.push(q ? `/packages?search=${encodeURIComponent(q)}` : "/packages");
   }
 
   return (
@@ -39,7 +46,7 @@ export function SearchWidget({ className }: { className?: string }) {
           >
             {tab === id && (
               <motion.span
-                layoutId="search-tab"
+                layoutId={`search-tab-${uid}`}
                 className="absolute inset-0 rounded-full bg-white shadow-soft"
                 transition={{ type: "spring", stiffness: 400, damping: 32 }}
               />
@@ -55,7 +62,13 @@ export function SearchWidget({ className }: { className?: string }) {
         onSubmit={onSearch}
         className="grid grid-cols-1 gap-px overflow-hidden rounded-2xl bg-navy-700/8 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_0.9fr_auto]"
       >
-        <Field icon={MapPin} label="Destination" placeholder="Where to?" />
+        <Field
+          icon={MapPin}
+          label="Destination"
+          placeholder="Where to?"
+          value={destination}
+          onChange={setDestination}
+        />
         <Field icon={CalendarDays} label="Dates" type="date" />
         <Field icon={Users} label="Travelers" placeholder="2 adults" />
         <Field icon={Wallet} label="Budget" placeholder="Any" />
@@ -75,11 +88,15 @@ function Field({
   label,
   placeholder,
   type = "text",
+  value,
+  onChange,
 }: {
   icon: React.ElementType;
   label: string;
   placeholder?: string;
   type?: string;
+  value?: string;
+  onChange?: (v: string) => void;
 }) {
   return (
     <label className="group flex cursor-text flex-col bg-white px-4 py-3 transition-colors hover:bg-mist">
@@ -91,6 +108,8 @@ function Field({
         <input
           type={type}
           placeholder={placeholder}
+          value={onChange ? value ?? "" : undefined}
+          onChange={onChange ? (e) => onChange(e.target.value) : undefined}
           className="w-full bg-transparent text-sm text-navy-900 placeholder:text-navy-700/35 focus:outline-none"
         />
       </span>

@@ -5,12 +5,14 @@ import { testimonials as mockTestimonials } from "@/data/testimonials";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-export async function fetchTestimonials(): Promise<Testimonial[]> {
+export async function fetchTestimonials({ allowMock = true } = {}): Promise<Testimonial[]> {
   try {
     const data = await apiGet<any[]>("/testimonials");
-    return data.length ? data.map(mapTestimonial) : mockTestimonials;
+    if (data.length) return data.map(mapTestimonial);
+    // Admin panel passes allowMock:false so it never lists un-editable sample rows.
+    return allowMock ? mockTestimonials : [];
   } catch (e) {
     console.warn("[testimonials] falling back to sample data:", (e as Error).message);
-    return mockTestimonials;
+    return allowMock ? mockTestimonials : [];
   }
 }

@@ -10,8 +10,15 @@ export const metadata: Metadata = {
     "Browse LG Travels' signature luxury tour packages — honeymoons, adventures, wellness retreats and bespoke journeys worldwide.",
 };
 
-export default async function PackagesPage() {
-  const [packages, site] = await Promise.all([fetchPackages(), fetchSiteSettings()]);
+export default async function PackagesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ search?: string }>;
+}) {
+  const [{ search }, [packages, site]] = await Promise.all([
+    searchParams,
+    Promise.all([fetchPackages(), fetchSiteSettings()]),
+  ]);
   const international = packages.filter((p) => p.tripType !== "domestic");
   const domestic = packages.filter((p) => p.tripType === "domestic");
 
@@ -43,7 +50,7 @@ export default async function PackagesPage() {
               {international.length} package{international.length === 1 ? "" : "s"}
             </span>
           </div>
-          <PackagesExplorer packages={international} />
+          <PackagesExplorer packages={international} initialSearch={search} />
         </section>
       )}
 
@@ -65,7 +72,7 @@ export default async function PackagesPage() {
               {domestic.length} package{domestic.length === 1 ? "" : "s"}
             </span>
           </div>
-          <PackagesExplorer packages={domestic} />
+          <PackagesExplorer packages={domestic} initialSearch={search} />
         </section>
       )}
 

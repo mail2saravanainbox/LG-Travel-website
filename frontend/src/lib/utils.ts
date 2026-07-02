@@ -12,6 +12,8 @@ export function formatCurrency(
   currency: string = "INR",
   locale?: string,
 ) {
+  // Guard against undefined/NaN from bad API data so cards never render "₹NaN".
+  if (!Number.isFinite(amount)) return "—";
   const resolvedLocale = locale ?? (currency === "INR" ? "en-IN" : "en-US");
   return new Intl.NumberFormat(resolvedLocale, {
     style: "currency",
@@ -22,11 +24,14 @@ export function formatCurrency(
 
 /** Format an ISO date string into a readable label. */
 export function formatDate(date: string | Date, locale: string = "en-US") {
+  const d = new Date(date);
+  // Guard against missing/malformed dates so the UI never shows "Invalid Date".
+  if (Number.isNaN(d.getTime())) return "—";
   return new Intl.DateTimeFormat(locale, {
     year: "numeric",
     month: "long",
     day: "numeric",
-  }).format(new Date(date));
+  }).format(d);
 }
 
 /** Build a URL-safe slug from arbitrary text. */

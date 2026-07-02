@@ -7,7 +7,12 @@ export const metadata: Metadata = {
   robots: { index: false },
 };
 
-export default function PaymentFailedPage() {
+export default async function PaymentFailedPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ reason?: string }>;
+}) {
+  const { reason } = await searchParams;
   return (
     <div className="container-lux grid min-h-[80vh] place-items-center py-28">
       <div className="w-full max-w-lg text-center">
@@ -21,6 +26,11 @@ export default function PaymentFailedPage() {
           Something went wrong and your payment didn&apos;t go through. Don&apos;t worry — you
           haven&apos;t been charged. Please try again or reach out and we&apos;ll help right away.
         </p>
+        {reason && (
+          <p className="mx-auto mt-4 max-w-sm rounded-xl bg-rose-50 px-4 py-2.5 text-sm text-rose-600">
+            {reason}
+          </p>
+        )}
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
           <Button href="/checkout" variant="gold" size="lg">
             <RefreshCw className="h-5 w-5" /> Try again

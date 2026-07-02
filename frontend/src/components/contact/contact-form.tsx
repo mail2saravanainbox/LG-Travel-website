@@ -7,7 +7,7 @@ import { z } from "zod";
 import { CheckCircle2, Send } from "lucide-react";
 import { createInquiry } from "@/services/inquiries.service";
 import { Button } from "@/components/ui/button";
-import { Input, Label, Textarea } from "@/components/ui/input";
+import { Input, Textarea } from "@/components/ui/input";
 
 const schema = z.object({
   name: z.string().min(2, "Please enter your name"),
@@ -97,11 +97,13 @@ function Field({
   error?: string;
   children: React.ReactNode;
 }) {
+  // Wrap the input in the <label> so screen readers associate them (the label
+  // and input were previously unlinked siblings).
   return (
-    <div>
-      <Label>{label}</Label>
+    <label className="block">
+      <span className="mb-1.5 block text-sm font-medium text-navy-800">{label}</span>
       {children}
       {error && <p className="mt-1.5 text-xs text-rose-500">{error}</p>}
-    </div>
+    </label>
   );
 }

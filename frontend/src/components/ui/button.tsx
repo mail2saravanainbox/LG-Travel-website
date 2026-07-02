@@ -38,9 +38,15 @@ export interface ButtonProps
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, href, ...props }, ref) => {
     const classes = cn(buttonVariants({ variant, size }), className);
-    if (href) {
+    // A disabled link isn't meaningful — fall through to a real <button disabled>
+    // so the disabled state actually applies. Forward onClick to the link too.
+    if (href && !props.disabled) {
       return (
-        <Link href={href} className={classes}>
+        <Link
+          href={href}
+          className={classes}
+          onClick={props.onClick as unknown as React.MouseEventHandler<HTMLAnchorElement>}
+        >
           {props.children}
         </Link>
       );

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { CheckCircle2, Download, Mail } from "lucide-react";
+import { CheckCircle2, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PrintInvoiceButton } from "@/components/shared/print-invoice-button";
 import { formatCurrency } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -13,8 +14,7 @@ export default async function PaymentSuccessPage({
 }: {
   searchParams: Promise<{ ref?: string; total?: string; currency?: string }>;
 }) {
-  const { ref: queryRef, total, currency } = await searchParams;
-  const ref = queryRef ?? "LG-" + Math.random().toString(36).slice(2, 8).toUpperCase();
+  const { ref, total, currency } = await searchParams;
   return (
     <div className="container-lux grid min-h-[80vh] place-items-center py-28">
       <div className="w-full max-w-lg text-center">
@@ -29,10 +29,12 @@ export default async function PaymentSuccessPage({
           your inbox.
         </p>
         <div className="mt-6 inline-flex flex-wrap items-center justify-center gap-x-5 gap-y-2 rounded-full bg-mist px-5 py-2.5 text-sm">
-          <span className="flex items-center gap-2">
-            <span className="text-ink/50">Reference</span>
-            <span className="font-display font-bold text-navy-900">{ref}</span>
-          </span>
+          {ref && (
+            <span className="flex items-center gap-2">
+              <span className="text-ink/50">Reference</span>
+              <span className="font-display font-bold text-navy-900">{ref}</span>
+            </span>
+          )}
           {total && (
             <span className="flex items-center gap-2">
               <span className="text-ink/50">Total paid</span>
@@ -43,9 +45,7 @@ export default async function PaymentSuccessPage({
           )}
         </div>
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-          <Button variant="primary" size="lg">
-            <Download className="h-5 w-5" /> Download invoice
-          </Button>
+          <PrintInvoiceButton />
           <Button href="/dashboard" variant="outline" size="lg">
             Go to dashboard
           </Button>

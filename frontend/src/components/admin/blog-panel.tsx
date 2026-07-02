@@ -23,7 +23,7 @@ export function BlogPanel() {
 
   const load = useCallback(() => {
     setLoading(true);
-    fetchBlogPosts()
+    fetchBlogPosts({ allowMock: false })
       .then(setPosts)
       .finally(() => setLoading(false));
   }, []);
@@ -43,7 +43,10 @@ export function BlogPanel() {
   }
 
   async function handleDelete(slug: string, title: string) {
-    if (!token) return;
+    if (!token) {
+      window.alert("Your session has expired — please sign in again.");
+      return;
+    }
     if (!window.confirm(`Delete "${title}"? This cannot be undone.`)) return;
     setDeleting(slug);
     try {

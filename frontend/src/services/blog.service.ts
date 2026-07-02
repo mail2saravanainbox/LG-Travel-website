@@ -5,14 +5,17 @@ import { blogPosts as mockPosts } from "@/data/blog";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-export async function fetchBlogPosts(): Promise<BlogPost[]> {
+export async function fetchBlogPosts({ allowMock = true } = {}): Promise<BlogPost[]> {
   try {
     const data = await apiGet<any[]>("/blog");
-    // If the API has no posts yet, fall back to samples so the page isn't empty.
-    return data.length ? data.map(mapBlogPost) : mockPosts;
+    // Public pages fall back to samples so the page isn't empty; the admin panel
+    // passes allowMock:false so it never shows un-editable fake rows (deleting a
+    // mock row would call the API with a fake id → 404).
+    if (data.length) return data.map(mapBlogPost);
+    return allowMock ? mockPosts : [];
   } catch (e) {
     console.warn("[blog] falling back to sample data:", (e as Error).message);
-    return mockPosts;
+    return allowMock ? mockPosts : [];
   }
 }
 

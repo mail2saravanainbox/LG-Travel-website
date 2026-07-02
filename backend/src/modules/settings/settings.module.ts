@@ -4,6 +4,7 @@ import {
   Get,
   Injectable,
   Module,
+  NotFoundException,
   Param,
   Put,
   UseGuards,
@@ -39,8 +40,12 @@ export class SettingsController {
 
   // Public: anyone (incl. the public site) can read settings.
   @Get(":key")
-  get(@Param("key") key: string) {
-    return this.svc.get(key);
+  async get(@Param("key") key: string) {
+    const value = await this.svc.get(key);
+    // Return a clean 404 for an unknown key rather than a 200 with an empty body
+    // (an empty body makes the client's res.json() throw a parse error).
+    if (value == null) throw new NotFoundException(`No settings for key "${key}"`);
+    return value;
   }
 
   // Admin-only: upsert a settings blob by key.

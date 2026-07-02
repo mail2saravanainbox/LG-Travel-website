@@ -50,10 +50,11 @@ export default function AdminLoginPage() {
 
           <div className="mt-6 space-y-4">
             <div>
-              <Label>Username</Label>
+              <Label htmlFor="admin-username">Username</Label>
               <div className="relative">
                 <User className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/30" />
                 <Input
+                  id="admin-username"
                   className="pl-10"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
@@ -64,10 +65,11 @@ export default function AdminLoginPage() {
               </div>
             </div>
             <div>
-              <Label>Password</Label>
+              <Label htmlFor="admin-password">Password</Label>
               <div className="relative">
                 <Lock className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/30" />
                 <Input
+                  id="admin-password"
                   className="pl-10"
                   type="password"
                   value={password}

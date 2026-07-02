@@ -57,7 +57,10 @@ function TestimonialForm({
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!token) return;
+    if (!token) {
+      window.alert("Your session has expired — please sign in again.");
+      return;
+    }
     setSubmitting(true);
     setError(null);
     try {
@@ -155,14 +158,17 @@ export function TestimonialsPanel() {
 
   const load = useCallback(() => {
     setLoading(true);
-    fetchTestimonials()
+    fetchTestimonials({ allowMock: false })
       .then(setItems)
       .finally(() => setLoading(false));
   }, []);
   useEffect(() => { load(); }, [load]);
 
   async function handleDelete(id: string, name: string) {
-    if (!token) return;
+    if (!token) {
+      window.alert("Your session has expired — please sign in again.");
+      return;
+    }
     if (!window.confirm(`Remove "${name}"'s testimonial?`)) return;
     setDeleting(id);
     try {
