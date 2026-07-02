@@ -26,7 +26,7 @@ export default async function PackagesPage() {
       />
 
       {site.internationalEnabled && international.length > 0 && (
-        <section className="container-lux pt-16 md:pt-24">
+        <section className="container-lux py-16 md:py-24">
           <div className="mb-8 flex items-end justify-between gap-6">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold-500">

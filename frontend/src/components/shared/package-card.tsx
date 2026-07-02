@@ -33,7 +33,7 @@ export function PackageCard({ pkg }: { pkg: TourPackage }) {
           <button
             onClick={() => toggle(pkg.id)}
             aria-label={wished ? "Remove from wishlist" : "Add to wishlist"}
-            className="grid h-9 w-9 place-items-center rounded-full bg-white/85 text-navy-800 backdrop-blur transition-colors hover:bg-white"
+            className="relative z-10 grid h-9 w-9 place-items-center rounded-full bg-white/85 text-navy-800 backdrop-blur transition-colors hover:bg-white"
           >
             <Heart className={cn("h-4.5 w-4.5", wished && "fill-rose-500 text-rose-500")} />
           </button>
@@ -75,7 +75,7 @@ export function PackageCard({ pkg }: { pkg: TourPackage }) {
             </span>
             <span className="text-xs text-ink/50"> /person</span>
           </div>
-          <span className="relative z-10 text-sm font-semibold text-gold-600 transition-colors group-hover:text-gold-500">
+          <span className="text-sm font-semibold text-gold-600 transition-colors group-hover:text-gold-500">
             View trip →
           </span>
         </div>
