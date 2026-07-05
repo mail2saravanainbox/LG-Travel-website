@@ -14,7 +14,7 @@ export default async function ContactPage() {
   const site = await fetchSiteSettings();
   const details = [
     { icon: MapPin, label: site.addressLabel, value: formatAddress(site.address) },
-    { icon: Phone, label: "Call us", value: `${formatPhone(site.phone)}  (${site.hours})` },
+    { icon: Phone, label: "Call us", value: `${formatPhone(site.phone)}\n(${site.hours})` },
     { icon: Mail, label: "Email", value: site.email },
     { icon: Clock, label: "Working hours", value: site.hours },
   ];
