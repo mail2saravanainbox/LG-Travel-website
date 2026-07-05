@@ -34,6 +34,32 @@ export function formatDate(date: string | Date, locale: string = "en-US") {
   }).format(d);
 }
 
+/**
+ * Format a phone field for display with an Indian ISD code. Handles one or more
+ * comma-separated numbers and prefixes "+91 " to any that lack a country code,
+ * so an already-prefixed number is never doubled.
+ */
+export function formatPhone(raw: string) {
+  return raw
+    .split(",")
+    .map((n) => n.trim())
+    .filter(Boolean)
+    .map((n) => (n.startsWith("+") ? n : `+91 ${n}`))
+    .join(", ");
+}
+
+/**
+ * Normalise an address for display: collapse stray whitespace and push the final
+ * comma-separated segment (e.g. "Guwahati – 781001") onto its own line. Render
+ * the result with the `whitespace-pre-line` class so the newline shows.
+ */
+export function formatAddress(raw: string) {
+  const clean = raw.replace(/\s+/g, " ").trim();
+  const lastComma = clean.lastIndexOf(",");
+  if (lastComma === -1) return clean;
+  return `${clean.slice(0, lastComma).trim()}\n${clean.slice(lastComma + 1).trim()}`;
+}
+
 /** Build a URL-safe slug from arbitrary text. */
 export function slugify(text: string) {
   return text
