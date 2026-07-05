@@ -3,6 +3,7 @@ import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { ContactForm } from "@/components/contact/contact-form";
 import { fetchSiteSettings } from "@/services/settings.service";
+import { formatAddress, formatPhone } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Contact Us",
@@ -12,8 +13,8 @@ export const metadata: Metadata = {
 export default async function ContactPage() {
   const site = await fetchSiteSettings();
   const details = [
-    { icon: MapPin, label: site.addressLabel, value: site.address },
-    { icon: Phone, label: "Call us", value: `${site.phone}  (${site.hours})` },
+    { icon: MapPin, label: site.addressLabel, value: formatAddress(site.address) },
+    { icon: Phone, label: "Call us", value: `${formatPhone(site.phone)}  (${site.hours})` },
     { icon: Mail, label: "Email", value: site.email },
     { icon: Clock, label: "Working hours", value: site.hours },
   ];
@@ -41,7 +42,7 @@ export default async function ContactPage() {
                 </span>
                 <div>
                   <p className="text-sm text-ink/50">{label}</p>
-                  <p className="font-medium text-navy-900">{value}</p>
+                  <p className="whitespace-pre-line font-medium text-navy-900">{value}</p>
                 </div>
               </li>
             ))}

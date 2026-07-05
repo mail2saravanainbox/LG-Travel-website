@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { FOOTER_LINKS } from "@/constants/site";
 import { fetchSiteSettings } from "@/services/settings.service";
+import { formatAddress, formatPhone } from "@/lib/utils";
 import {
   FacebookIcon,
   InstagramIcon,
@@ -42,11 +43,11 @@ export async function Footer() {
           <ul className="mt-6 space-y-3 text-sm text-white/70">
             <li className="flex items-start gap-3">
               <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold-400" />
-              {site.address}
+              <span className="whitespace-pre-line">{formatAddress(site.address)}</span>
             </li>
             <li className="flex items-center gap-3">
               <Phone className="h-4 w-4 shrink-0 text-gold-400" />
-              {site.phone}
+              {formatPhone(site.phone)}
             </li>
             <li className="flex items-center gap-3">
               <Mail className="h-4 w-4 shrink-0 text-gold-400" />
