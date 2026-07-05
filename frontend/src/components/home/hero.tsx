@@ -2,18 +2,21 @@
 
 import { motion, type Variants } from "framer-motion";
 import { Compass, Plane, ShieldCheck, Star } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { EASE_LUX } from "@/lib/motion";
 import { SearchWidget } from "./search-widget";
 
+// Poster is delivered through Cloudinary transforms (f_auto/q_auto) and is the
+// sole hero media on mobile and reduced-motion, so it must stay lightweight.
 const POSTER =
-  "https://res.cloudinary.com/dzevugvgg/image/upload/v1779640602/lg-travels/site/images/1514282401047-d79a71a590e8.jpg";
+  "https://res.cloudinary.com/dzevugvgg/image/upload/f_auto,q_auto,w_1920/v1779640602/lg-travels/site/images/1514282401047-d79a71a590e8.jpg";
 
-// Cinematic drone footage hosted on Cloudinary (HD 1920×1080).
-const VIDEO_SOURCES = [
-  "https://res.cloudinary.com/dzevugvgg/video/upload/v1779640801/lg-travels/site/videos/pexels-2169880.mp4",
-  "https://res.cloudinary.com/dzevugvgg/video/upload/v1779640804/lg-travels/site/videos/pexels-1526909.mp4",
-];
+// Compressed HD drone loop (~1.8 MB, down from the 58 MB 4K master that stalled
+// mobile) via Cloudinary delivery transforms. f_auto serves webm/av1 where
+// supported; br_2m caps the bitrate. Swap this URL when the asset moves to AWS.
+const HERO_VIDEO =
+  "https://res.cloudinary.com/dzevugvgg/video/upload/f_auto,q_auto:eco,w_1920,c_limit,br_2m/v1779640804/lg-travels/site/videos/pexels-1526909.mp4";
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -43,26 +46,44 @@ export function Hero({
   trendingPrice?: string;
   trendingRating?: string;
 } = {}) {
+  // Load the background video only on larger screens, and never when the user
+  // prefers reduced motion. Mobile / slow-connection visitors get the poster
+  // image instantly instead of downloading the clip. Starts false so the server
+  // render and first client render match (no hydration mismatch); the effect
+  // flips it on where appropriate.
+  const [showVideo, setShowVideo] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia(
+      "(min-width: 768px) and (prefers-reduced-motion: no-preference)",
+    );
+    const update = () => setShowVideo(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
   return (
     <section className="relative flex min-h-[100svh] items-center overflow-hidden">
-      {/* Cinematic video background with poster fallback.
-          suppressHydrationWarning: React sets `muted` as a DOM property, not an
-          attribute, so the server HTML and client differ on it — the source of
-          the homepage's hydration mismatch (React #418). */}
-      <video
-        className="absolute inset-0 h-full w-full object-cover"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        poster={POSTER}
-        suppressHydrationWarning
-      >
-        {VIDEO_SOURCES.map((src) => (
-          <source key={src} src={src} type="video/mp4" />
-        ))}
-      </video>
+      {/* Poster is painted instantly and is the only hero media on mobile /
+          reduced-motion. The video mounts on top only where it's appropriate. */}
+      <div
+        className="absolute inset-0 h-full w-full bg-cover bg-center"
+        style={{ backgroundImage: `url(${POSTER})` }}
+        aria-hidden
+      />
+      {showVideo && (
+        <video
+          className="absolute inset-0 h-full w-full object-cover"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          poster={POSTER}
+        >
+          <source src={HERO_VIDEO} type="video/mp4" />
+        </video>
+      )}
 
       {/* Gradient overlays for readability */}
       <div className="hero-overlay absolute inset-0" aria-hidden />
