@@ -1,15 +1,14 @@
 import type { Metadata } from "next";
-import { CheckCircle2, Mail } from "lucide-react";
+import { CheckCircle2, Clock, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { PrintInvoiceButton } from "@/components/shared/print-invoice-button";
 import { formatCurrency } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "Payment Successful",
+  title: "Booking received",
   robots: { index: false },
 };
 
-export default async function PaymentSuccessPage({
+export default async function BookingReceivedPage({
   searchParams,
 }: {
   searchParams: Promise<{ ref?: string; total?: string; currency?: string }>;
@@ -22,12 +21,13 @@ export default async function PaymentSuccessPage({
           <CheckCircle2 className="h-11 w-11" />
         </span>
         <h1 className="mt-6 font-display text-3xl font-bold text-navy-900 md:text-4xl">
-          Booking confirmed!
+          Booking request received
         </h1>
         <p className="mt-3 text-ink/65">
-          Thank you — your luxury journey is booked. A confirmation and invoice are on their way to
-          your inbox.
+          Thank you! We&apos;ve received your request. A travel designer will review availability and
+          reach out within 24 hours to confirm the details and arrange secure payment.
         </p>
+
         <div className="mt-6 inline-flex flex-wrap items-center justify-center gap-x-5 gap-y-2 rounded-full bg-mist px-5 py-2.5 text-sm">
           {ref && (
             <span className="flex items-center gap-2">
@@ -37,21 +37,29 @@ export default async function PaymentSuccessPage({
           )}
           {total && (
             <span className="flex items-center gap-2">
-              <span className="text-ink/50">Total paid</span>
+              <span className="text-ink/50">Estimated total</span>
               <span className="font-display font-bold text-navy-900">
                 {formatCurrency(Number(total), currency ?? "INR")}
               </span>
             </span>
           )}
         </div>
+
+        <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-amber-50 px-4 py-1.5 text-sm font-medium text-amber-700">
+          <Clock className="h-4 w-4" /> Pending confirmation · you haven&apos;t been charged
+        </p>
+
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-          <PrintInvoiceButton />
-          <Button href="/dashboard" variant="outline" size="lg">
-            Go to dashboard
+          <Button href="/dashboard/bookings" variant="gold" size="lg">
+            View my bookings
+          </Button>
+          <Button href="/" variant="outline" size="lg">
+            Back to home
           </Button>
         </div>
+
         <p className="mt-8 flex items-center justify-center gap-2 text-sm text-ink/50">
-          <Mail className="h-4 w-4" /> A travel designer will reach out within 24 hours.
+          <Mail className="h-4 w-4" /> We&apos;ll email you at the address on your booking.
         </p>
       </div>
     </div>
