@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Injectable, Module, Post } from "@nestjs/common";
+import { Body, Controller, Injectable, Module, Post } from "@nestjs/common";
 import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from "class-validator";
 import { PrismaService } from "../../prisma/prisma.service";
 
@@ -29,10 +29,8 @@ export class InquiriesController {
   create(@Body() dto: CreateInquiryDto) {
     return this.service.create(dto);
   }
-  @Get()
-  findAll() {
-    return this.service.findAll();
-  }
+  // Leads are read only via the admin-guarded GET /admin/inquiries.
+  // A public list route here would expose all customer PII, so it is intentionally omitted.
 }
 
 @Module({
