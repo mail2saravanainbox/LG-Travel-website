@@ -13,6 +13,7 @@ import {
 import { IsEmail, IsInt, IsNotEmpty, IsOptional, IsString, Min } from "class-validator";
 import { PrismaService } from "../../prisma/prisma.service";
 import { ClerkAuthGuard, ClerkAuthModule } from "../auth/clerk-auth.module";
+import { EmailService } from "../email/email.module";
 
 export class CreateBookingDto {
   @IsString() @IsNotEmpty() packageSlug!: string;
@@ -27,7 +28,10 @@ const ref = () => "LG-" + Math.random().toString(36).slice(2, 8).toUpperCase();
 
 @Injectable()
 export class BookingsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly email: EmailService,
+  ) {}
 
   async create(dto: CreateBookingDto, clerkUserId?: string) {
     const pkg = await this.prisma.package.findUnique({ where: { slug: dto.packageSlug } });
@@ -47,7 +51,7 @@ export class BookingsService {
       userId = user.id;
     }
 
-    return this.prisma.booking.create({
+    const booking = await this.prisma.booking.create({
       data: {
         reference: ref(),
         packageId: pkg.id,
@@ -64,6 +68,23 @@ export class BookingsService {
         status: "pending",
       },
     });
+
+    // Best-effort staff alert + customer acknowledgement (never throws).
+    this.email.sendBookingEmails(
+      {
+        reference: booking.reference,
+        leadName: booking.leadName,
+        leadEmail: booking.leadEmail,
+        leadPhone: booking.leadPhone,
+        travelers: booking.travelers,
+        startDate: booking.startDate,
+        total: booking.total.toString(),
+        currency: booking.currency,
+      },
+      pkg.title,
+    );
+
+    return booking;
   }
 
   async findOne(reference: string) {

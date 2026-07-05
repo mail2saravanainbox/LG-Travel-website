@@ -1,6 +1,7 @@
 import { Body, Controller, Injectable, Module, Post } from "@nestjs/common";
 import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from "class-validator";
 import { PrismaService } from "../../prisma/prisma.service";
+import { EmailService } from "../email/email.module";
 
 export class CreateInquiryDto {
   @IsString() @IsNotEmpty() name!: string;
@@ -13,9 +14,15 @@ export class CreateInquiryDto {
 
 @Injectable()
 export class InquiriesService {
-  constructor(private readonly prisma: PrismaService) {}
-  create(data: CreateInquiryDto) {
-    return this.prisma.inquiry.create({ data });
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly email: EmailService,
+  ) {}
+  async create(data: CreateInquiryDto) {
+    const inquiry = await this.prisma.inquiry.create({ data });
+    // Best-effort staff alert + customer acknowledgement (never throws).
+    this.email.sendInquiryEmails(inquiry);
+    return inquiry;
   }
   findAll() {
     return this.prisma.inquiry.findMany({ orderBy: { createdAt: "desc" } });
