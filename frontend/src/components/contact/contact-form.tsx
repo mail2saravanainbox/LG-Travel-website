@@ -66,7 +66,7 @@ export function ContactForm() {
           <Input type="email" placeholder="you@example.com" {...register("email")} />
         </Field>
         <Field label="Phone" error={errors.phone?.message}>
-          <Input placeholder="+971 50 000 0000" {...register("phone")} />
+          <Input placeholder="+91 90000 00000" {...register("phone")} />
         </Field>
         <Field label="Destination of interest" error={errors.destination?.message}>
           <Input placeholder="e.g. Maldives" {...register("destination")} />
