@@ -74,6 +74,19 @@ export class BookingsService {
     if (!booking) throw new NotFoundException(`Booking "${reference}" not found`);
     return booking;
   }
+
+  // Bookings belonging to the signed-in Clerk user (for the customer dashboard).
+  async findMine(clerkUserId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { clerkId: clerkUserId },
+    });
+    if (!user) return [];
+    return this.prisma.booking.findMany({
+      where: { userId: user.id },
+      include: { package: true, payments: true },
+      orderBy: { createdAt: "desc" },
+    });
+  }
 }
 
 @Controller("bookings")
@@ -85,6 +98,14 @@ export class BookingsController {
   @Post()
   create(@Body() dto: CreateBookingDto, @Req() req: { auth?: { userId: string } }) {
     return this.service.create(dto, req.auth?.userId);
+  }
+
+  // The signed-in user's own bookings. Declared before the :reference route so
+  // "mine" is matched as a static path, not treated as a booking reference.
+  @UseGuards(ClerkAuthGuard)
+  @Get("mine")
+  findMine(@Req() req: { auth?: { userId: string } }) {
+    return this.service.findMine(req.auth?.userId ?? "");
   }
 
   // Confirmation lookup stays public so emailed/booking-reference links work.

@@ -14,6 +14,16 @@ export async function apiGet<T>(path: string): Promise<T> {
   return (await res.json()) as T;
 }
 
+/** GET a protected JSON resource with a Clerk bearer token. */
+export async function authGet<T>(path: string, token: string): Promise<T> {
+  const res = await fetch(`${API_BASE}${path}`, {
+    headers: { Authorization: `Bearer ${token}` },
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error(`GET ${path} → ${res.status}`);
+  return (await res.json()) as T;
+}
+
 /** POST JSON and return the created resource. Pass a Clerk token for protected routes. */
 export async function apiPost<T>(path: string, body: unknown, token?: string): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
