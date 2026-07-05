@@ -11,11 +11,13 @@ import { AdminModule } from "./modules/admin/admin.module";
 import { MediaModule } from "./modules/media/media.module";
 import { BlogModule } from "./modules/blog/blog.module";
 import { SettingsModule } from "./modules/settings/settings.module";
+import { EmailModule } from "./modules/email/email.module";
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     PrismaModule,
+    EmailModule,
     DestinationsModule,
     PackagesModule,
     TestimonialsModule,
