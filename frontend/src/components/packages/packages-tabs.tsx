@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { TourPackage } from "@/types";
 import { PackagesExplorer } from "./packages-explorer";
 import { cn } from "@/lib/utils";
@@ -47,6 +47,11 @@ export function PackagesTabs({
 
   const validInitial = groups.find((g) => g.id === initialTab)?.id;
   const [active, setActive] = useState(validInitial ?? groups[0]?.id ?? "international");
+  // Keep the active tab in sync with the URL (?type=…) so the navbar dropdown
+  // links switch tabs even when the user is already on the Packages page.
+  useEffect(() => {
+    if (validInitial) setActive(validInitial);
+  }, [validInitial]);
   const current = groups.find((g) => g.id === active) ?? groups[0];
   if (!current) return null;
 
