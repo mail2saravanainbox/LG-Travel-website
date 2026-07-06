@@ -5,7 +5,7 @@ import { Check, Clock, MapPin, Star, Users, X } from "lucide-react";
 import { fetchPackage, fetchPackageSlugs, fetchRelatedPackages } from "@/services/packages.service";
 import { fetchTestimonials } from "@/services/testimonials.service";
 import { faqs } from "@/data/faq";
-import { PackageGallery } from "@/components/packages/package-gallery";
+import { ImageCarousel } from "@/components/shared/image-carousel";
 import { ItineraryTimeline } from "@/components/packages/itinerary-timeline";
 import { BookingBox } from "@/components/packages/booking-box";
 import { PackageCard } from "@/components/shared/package-card";
@@ -99,7 +99,7 @@ export default async function PackageDetailPage({
         </div>
 
         <div className="mt-6">
-          <PackageGallery images={pkg.gallery} title={pkg.title} />
+          <ImageCarousel images={[pkg.heroImage, ...pkg.gallery]} title={pkg.title} />
         </div>
       </div>
 
