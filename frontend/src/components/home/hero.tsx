@@ -12,11 +12,12 @@ import { SearchWidget } from "./search-widget";
 const POSTER =
   "https://res.cloudinary.com/dzevugvgg/image/upload/f_auto,q_auto,w_1920/v1779640602/lg-travels/site/images/1514282401047-d79a71a590e8.jpg";
 
-// Compressed HD drone loop (~1.8 MB, down from the 58 MB 4K master that stalled
-// mobile) via Cloudinary delivery transforms. f_auto serves webm/av1 where
-// supported; br_2m caps the bitrate. Swap this URL when the asset moves to AWS.
+// The original premium 4K drone master, compressed for delivery (f_auto serves
+// webm/av1 where supported; q_auto + br_4m cap the size vs the 58 MB raw). It
+// only loads on desktop — mobile shows the poster image — so the heavier premium
+// clip doesn't hurt mobile performance. Swap this URL when the asset moves to AWS.
 const HERO_VIDEO =
-  "https://res.cloudinary.com/dzevugvgg/video/upload/f_auto,q_auto:eco,w_1920,c_limit,br_2m/v1779640804/lg-travels/site/videos/pexels-1526909.mp4";
+  "https://res.cloudinary.com/dzevugvgg/video/upload/f_auto,q_auto,w_1920,c_limit,br_4m/v1779640801/lg-travels/site/videos/pexels-2169880.mp4";
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 30 },
