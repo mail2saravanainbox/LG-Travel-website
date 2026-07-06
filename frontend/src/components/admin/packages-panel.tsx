@@ -2,19 +2,11 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
-import {
-  ArrowDown,
-  ArrowLeft,
-  ArrowUp,
-  ExternalLink,
-  Loader2,
-  Pencil,
-  Plus,
-  Star,
-  Trash2,
-} from "lucide-react";
+import { ArrowLeft, ExternalLink, Loader2, Pencil, Plus, Star, Trash2 } from "lucide-react";
 import { fetchPackage, fetchPackages } from "@/services/packages.service";
 import { adminDeletePackage, reorderPackages } from "@/services/admin.service";
+import { useReorder } from "@/hooks/use-reorder";
+import { ReorderControls } from "./reorder-controls";
 import { useAdmin } from "@/store/admin";
 import type { TourPackage } from "@/types";
 import { PackageForm } from "./package-form";
@@ -30,7 +22,11 @@ export function PackagesPanel() {
   const [mode, setMode] = useState<Mode>({ kind: "list" });
   const [opening, setOpening] = useState<string | null>(null); // slug being loaded for edit
   const [deleting, setDeleting] = useState<string | null>(null);
-  const [savingOrder, setSavingOrder] = useState(false);
+  const { cols, move, dragProps, dragIndex, overIndex } = useReorder(
+    packages,
+    setPackages,
+    (ids) => reorderPackages(token ?? "", ids),
+  );
 
   const load = useCallback(() => {
     setLoading(true);
@@ -50,24 +46,6 @@ export function PackagesPanel() {
       if (full) setMode({ kind: "edit", pkg: full });
     } finally {
       setOpening(null);
-    }
-  }
-
-  // Move a package one place earlier/later and persist the new order.
-  async function move(index: number, dir: -1 | 1) {
-    const target = index + dir;
-    if (target < 0 || target >= packages.length || !token || savingOrder) return;
-    const next = [...packages];
-    [next[index], next[target]] = [next[target], next[index]];
-    setPackages(next); // optimistic
-    setSavingOrder(true);
-    try {
-      await reorderPackages(token, next.map((x) => x.id));
-    } catch (e) {
-      window.alert((e as Error).message);
-      load(); // revert on failure
-    } finally {
-      setSavingOrder(false);
     }
   }
 
@@ -129,7 +107,14 @@ export function PackagesPanel() {
           {packages.map((p, index) => (
             <li
               key={p.id}
-              className="overflow-hidden rounded-2xl border border-navy-700/8 bg-white shadow-soft"
+              {...dragProps(index)}
+              className={`overflow-hidden rounded-2xl border bg-white shadow-soft transition ${
+                dragIndex === index
+                  ? "border-gold-400 opacity-50"
+                  : overIndex === index
+                    ? "border-gold-400 ring-2 ring-gold-300"
+                    : "border-navy-700/8"
+              }`}
             >
               <div className="relative h-32 w-full bg-mist">
                 {p.heroImage ? (
@@ -164,40 +149,33 @@ export function PackagesPanel() {
                     View <ExternalLink className="h-3 w-3" />
                   </a>
                 </div>
-                <div className="mt-3 flex items-center gap-2 border-t border-navy-700/8 pt-3">
-                  <button onClick={() => move(index, -1)} disabled={index === 0 || savingOrder}
-                    title="Move up" aria-label="Move up"
-                    className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-navy-700/15 text-navy-700 hover:border-navy-700/40 disabled:opacity-30">
-                    <ArrowUp className="h-3.5 w-3.5" />
-                  </button>
-                  <button onClick={() => move(index, 1)} disabled={index === packages.length - 1 || savingOrder}
-                    title="Move down" aria-label="Move down"
-                    className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-navy-700/15 text-navy-700 hover:border-navy-700/40 disabled:opacity-30">
-                    <ArrowDown className="h-3.5 w-3.5" />
-                  </button>
-                  <button
-                    onClick={() => startEdit(p.slug)}
-                    disabled={opening === p.slug}
-                    className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-navy-700/15 py-1.5 text-xs font-medium text-navy-700 hover:border-navy-700/40 disabled:opacity-50"
-                  >
-                    {opening === p.slug ? (
-                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                    ) : (
-                      <Pencil className="h-3.5 w-3.5" />
-                    )}
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(p.slug, p.title)}
-                    disabled={deleting === p.slug}
-                    className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-rose-200 px-3 py-1.5 text-xs font-medium text-rose-500 hover:bg-rose-50 disabled:opacity-50"
-                  >
-                    {deleting === p.slug ? (
-                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                    ) : (
-                      <Trash2 className="h-3.5 w-3.5" />
-                    )}
-                  </button>
+                <div className="mt-3 space-y-2 border-t border-navy-700/8 pt-3">
+                  <ReorderControls index={index} count={packages.length} cols={cols} onMove={move} />
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => startEdit(p.slug)}
+                      disabled={opening === p.slug}
+                      className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-navy-700/15 py-1.5 text-xs font-medium text-navy-700 hover:border-navy-700/40 disabled:opacity-50"
+                    >
+                      {opening === p.slug ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <Pencil className="h-3.5 w-3.5" />
+                      )}
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(p.slug, p.title)}
+                      disabled={deleting === p.slug}
+                      className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-rose-200 px-3 py-1.5 text-xs font-medium text-rose-500 hover:bg-rose-50 disabled:opacity-50"
+                    >
+                      {deleting === p.slug ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-3.5 w-3.5" />
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
             </li>
