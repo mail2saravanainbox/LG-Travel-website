@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { CalendarDays, Check, MapPin, Star } from "lucide-react";
 import { fetchDestinationDetail, fetchDestinationSlugs } from "@/services/destinations.service";
+import { ImageCarousel } from "@/components/shared/image-carousel";
 import { PageHeader } from "@/components/shared/page-header";
 import { PackageCard } from "@/components/shared/package-card";
 import { SectionHeading } from "@/components/shared/section-heading";
@@ -74,21 +74,11 @@ export default async function DestinationDetailPage({
             </ul>
 
             {/* Gallery */}
-            <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4">
-              {destination.gallery.map((src, i) => (
-                <div
-                  key={i}
-                  className="relative aspect-square overflow-hidden rounded-2xl shadow-soft"
-                >
-                  <Image
-                    src={src}
-                    alt={`${destination.name} ${i + 1}`}
-                    fill
-                    sizes="(max-width: 768px) 50vw, 25vw"
-                    className="object-cover transition-transform duration-500 hover:scale-110"
-                  />
-                </div>
-              ))}
+            <div className="mt-10">
+              <ImageCarousel
+                images={[destination.heroImage, ...destination.gallery]}
+                title={destination.name}
+              />
             </div>
           </div>
 
