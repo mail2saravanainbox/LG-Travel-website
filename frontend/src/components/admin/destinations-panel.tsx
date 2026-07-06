@@ -2,9 +2,19 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
-import { ArrowLeft, ExternalLink, Loader2, Pencil, Plus, Star, Trash2 } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowLeft,
+  ArrowUp,
+  ExternalLink,
+  Loader2,
+  Pencil,
+  Plus,
+  Star,
+  Trash2,
+} from "lucide-react";
 import { fetchDestinationDetail, fetchDestinations } from "@/services/destinations.service";
-import { adminDeleteDestination } from "@/services/admin.service";
+import { adminDeleteDestination, reorderDestinations } from "@/services/admin.service";
 import { useAdmin } from "@/store/admin";
 import type { Destination } from "@/types";
 import { DestinationForm } from "./destination-form";
@@ -20,6 +30,7 @@ export function DestinationsPanel() {
   const [mode, setMode] = useState<Mode>({ kind: "list" });
   const [opening, setOpening] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [savingOrder, setSavingOrder] = useState(false);
 
   const load = useCallback(() => {
     setLoading(true);
@@ -36,6 +47,24 @@ export function DestinationsPanel() {
       if (destination) setMode({ kind: "edit", dest: destination });
     } finally {
       setOpening(null);
+    }
+  }
+
+  // Move a destination one place earlier/later and persist the new order.
+  async function move(index: number, dir: -1 | 1) {
+    const target = index + dir;
+    if (target < 0 || target >= items.length || !token || savingOrder) return;
+    const next = [...items];
+    [next[index], next[target]] = [next[target], next[index]];
+    setItems(next); // optimistic
+    setSavingOrder(true);
+    try {
+      await reorderDestinations(token, next.map((x) => x.id));
+    } catch (e) {
+      window.alert((e as Error).message);
+      load(); // revert on failure
+    } finally {
+      setSavingOrder(false);
     }
   }
 
@@ -87,7 +116,7 @@ export function DestinationsPanel() {
         <p className="mt-10 text-center text-ink/50">No destinations yet.</p>
       ) : (
         <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((d) => (
+          {items.map((d, index) => (
             <li key={d.id}
               className="overflow-hidden rounded-2xl border border-navy-700/8 bg-white shadow-soft">
               <div className="relative h-32 w-full bg-mist">
@@ -114,7 +143,17 @@ export function DestinationsPanel() {
                     View <ExternalLink className="h-3 w-3" />
                   </a>
                 </div>
-                <div className="mt-3 flex gap-2 border-t border-navy-700/8 pt-3">
+                <div className="mt-3 flex items-center gap-2 border-t border-navy-700/8 pt-3">
+                  <button onClick={() => move(index, -1)} disabled={index === 0 || savingOrder}
+                    title="Move up" aria-label="Move up"
+                    className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-navy-700/15 text-navy-700 hover:border-navy-700/40 disabled:opacity-30">
+                    <ArrowUp className="h-3.5 w-3.5" />
+                  </button>
+                  <button onClick={() => move(index, 1)} disabled={index === items.length - 1 || savingOrder}
+                    title="Move down" aria-label="Move down"
+                    className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-navy-700/15 text-navy-700 hover:border-navy-700/40 disabled:opacity-30">
+                    <ArrowDown className="h-3.5 w-3.5" />
+                  </button>
                   <button onClick={() => startEdit(d.slug)} disabled={opening === d.slug}
                     className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-navy-700/15 py-1.5 text-xs font-medium text-navy-700 hover:border-navy-700/40 disabled:opacity-50">
                     {opening === d.slug ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Pencil className="h-3.5 w-3.5" />}

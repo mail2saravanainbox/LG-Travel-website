@@ -169,7 +169,12 @@ export class PackagesService {
   }
 
   findAll(params: { category?: string; featured?: string; sort?: string; tripType?: string }) {
-    let orderBy: Prisma.PackageOrderByWithRelationInput = { isFeatured: "desc" };
+    let orderBy:
+      | Prisma.PackageOrderByWithRelationInput
+      | Prisma.PackageOrderByWithRelationInput[] = [
+      { sortOrder: "asc" },
+      { isFeatured: "desc" },
+    ];
     if (params.sort === "price-asc") orderBy = { price: "asc" };
     else if (params.sort === "price-desc") orderBy = { price: "desc" };
     else if (params.sort === "rating") orderBy = { rating: "desc" };
@@ -195,6 +200,14 @@ export class PackagesService {
       },
       orderBy,
     });
+  }
+
+  /** Set the manual display order: sortOrder = position in the given id list. */
+  async reorder(ids: string[]) {
+    await this.prisma.$transaction(
+      ids.map((id, i) => this.prisma.package.update({ where: { id }, data: { sortOrder: i } })),
+    );
+    return { ok: true, count: ids.length };
   }
 
   async findOne(slug: string) {

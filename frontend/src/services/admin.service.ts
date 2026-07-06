@@ -221,6 +221,14 @@ export const adminUpdateDestination = (
 export const adminDeleteDestination = (token: string, slug: string) =>
   apiDelete<{ deleted: boolean; slug: string }>(`/destinations/${slug}`, token);
 
+/** Save the manual display order of destinations (ids in the desired order). */
+export const reorderDestinations = (token: string, ids: string[]) =>
+  apiPatch<{ ok: boolean }>("/destinations/reorder", { ids }, token);
+
+/** Save the manual display order of packages (ids in the desired order). */
+export const reorderPackages = (token: string, ids: string[]) =>
+  apiPatch<{ ok: boolean }>("/packages/reorder", { ids }, token);
+
 export interface NewTestimonialInput {
   name: string;
   quote: string;
