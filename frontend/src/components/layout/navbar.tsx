@@ -51,8 +51,9 @@ export function Navbar() {
               link.href === "/"
                 ? pathname === "/"
                 : pathname.startsWith(link.href);
+            const isPackages = link.href === "/packages";
             return (
-              <li key={link.href}>
+              <li key={link.href} className={cn(isPackages && "group relative")}>
                 <Link
                   href={link.href}
                   className={cn(
@@ -69,6 +70,24 @@ export function Navbar() {
                     />
                   )}
                 </Link>
+                {isPackages && (
+                  <div className="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 pt-3 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
+                    <div className="min-w-[190px] rounded-2xl border border-navy-700/10 bg-white p-2 shadow-lift">
+                      <Link
+                        href="/packages?type=international"
+                        className="block rounded-xl px-4 py-2.5 text-sm font-medium text-navy-800 hover:bg-navy-50"
+                      >
+                        International
+                      </Link>
+                      <Link
+                        href="/packages?type=domestic"
+                        className="block rounded-xl px-4 py-2.5 text-sm font-medium text-navy-800 hover:bg-navy-50"
+                      >
+                        Domestic
+                      </Link>
+                    </div>
+                  </div>
+                )}
               </li>
             );
           })}
@@ -140,6 +159,22 @@ export function Navbar() {
                     >
                       {link.label}
                     </Link>
+                    {link.href === "/packages" && (
+                      <div className="ml-4 flex flex-col border-l border-navy-700/10 pl-3">
+                        <Link
+                          href="/packages?type=international"
+                          className="rounded-lg px-3 py-2 text-base text-navy-700/80 hover:bg-navy-50"
+                        >
+                          International
+                        </Link>
+                        <Link
+                          href="/packages?type=domestic"
+                          className="rounded-lg px-3 py-2 text-base text-navy-700/80 hover:bg-navy-50"
+                        >
+                          Domestic
+                        </Link>
+                      </div>
+                    )}
                   </li>
                 ))}
               </ul>

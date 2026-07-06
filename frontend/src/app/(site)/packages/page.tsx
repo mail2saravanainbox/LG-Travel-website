@@ -13,9 +13,9 @@ export const metadata: Metadata = {
 export default async function PackagesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ search?: string }>;
+  searchParams: Promise<{ search?: string; type?: string }>;
 }) {
-  const [{ search }, [packages, site]] = await Promise.all([
+  const [{ search, type }, [packages, site]] = await Promise.all([
     searchParams,
     Promise.all([fetchPackages(), fetchSiteSettings()]),
   ]);
@@ -46,6 +46,7 @@ export default async function PackagesPage({
           domestic={domestic}
           internationalEnabled={site.internationalEnabled}
           initialSearch={search}
+          initialTab={type}
         />
       </section>
     </>
