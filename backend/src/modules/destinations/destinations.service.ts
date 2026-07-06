@@ -24,8 +24,18 @@ export class DestinationsService {
           ? { continent: { equals: params.continent, mode: "insensitive" as const } }
           : {}),
       },
-      orderBy: { name: "asc" },
+      orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
     });
+  }
+
+  /** Set the manual display order: sortOrder = position in the given id list. */
+  async reorder(ids: string[]) {
+    await this.prisma.$transaction(
+      ids.map((id, i) =>
+        this.prisma.destination.update({ where: { id }, data: { sortOrder: i } }),
+      ),
+    );
+    return { ok: true, count: ids.length };
   }
 
   async findOne(slug: string) {

@@ -104,6 +104,7 @@ model Destination {
   bestSeason    String?
   highlights    Json       @default("[]")
   isFeatured    Boolean    @default(false)
+  sortOrder     Int        @default(0)
   packages      Package[]
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
@@ -136,6 +137,7 @@ model Package {
   badge          String?
   isFeatured     Boolean         @default(false)
   isActive       Boolean         @default(true)
+  sortOrder      Int             @default(0)
   itinerary      Itinerary[]
   bookings       Booking[]
   reviews        Review[]

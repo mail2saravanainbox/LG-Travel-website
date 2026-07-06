@@ -35,6 +35,13 @@ export class PackagesController {
     return this.service.create(dto);
   }
 
+  // Declared before :slug so "reorder" isn't treated as a package slug.
+  @UseGuards(AdminGuard)
+  @Patch("reorder")
+  reorder(@Body() body: { ids: string[] }) {
+    return this.service.reorder(body.ids ?? []);
+  }
+
   // Admin-only: edit an existing package.
   @UseGuards(AdminGuard)
   @Patch(":slug")

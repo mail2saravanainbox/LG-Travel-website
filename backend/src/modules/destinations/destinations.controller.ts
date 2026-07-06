@@ -28,6 +28,13 @@ export class DestinationsController {
     return this.service.create(dto);
   }
 
+  // Declared before :slug so "reorder" isn't treated as a destination slug.
+  @UseGuards(AdminGuard)
+  @Patch("reorder")
+  reorder(@Body() body: { ids: string[] }) {
+    return this.service.reorder(body.ids ?? []);
+  }
+
   @UseGuards(AdminGuard)
   @Patch(":slug")
   update(@Param("slug") slug: string, @Body() dto: UpdateDestinationDto) {
