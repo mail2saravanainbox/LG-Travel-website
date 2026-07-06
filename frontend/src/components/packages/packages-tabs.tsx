@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import type { TourPackage } from "@/types";
 import { PackagesExplorer } from "./packages-explorer";
 import { cn } from "@/lib/utils";
@@ -45,6 +46,7 @@ export function PackagesTabs({
     data: domestic,
   });
 
+  const router = useRouter();
   const validInitial = groups.find((g) => g.id === initialTab)?.id;
   const [active, setActive] = useState(validInitial ?? groups[0]?.id ?? "international");
   // Keep the active tab in sync with the URL (?type=…) so the navbar dropdown
@@ -53,6 +55,13 @@ export function PackagesTabs({
     if (validInitial) setActive(validInitial);
   }, [validInitial]);
   const current = groups.find((g) => g.id === active) ?? groups[0];
+
+  // Switch tab instantly, and update the URL so the page hero (International vs
+  // Domestic) re-renders to match.
+  const selectTab = (id: string) => {
+    setActive(id);
+    router.push(`/packages?type=${id}`, { scroll: false });
+  };
   if (!current) return null;
 
   return (
@@ -62,7 +71,7 @@ export function PackagesTabs({
           <button
             key={g.id}
             type="button"
-            onClick={() => setActive(g.id)}
+            onClick={() => selectTab(g.id)}
             className={cn(
               "shrink-0 rounded-full px-6 py-2.5 text-sm font-semibold transition-all",
               active === g.id

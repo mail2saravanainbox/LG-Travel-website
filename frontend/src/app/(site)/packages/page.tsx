@@ -22,13 +22,33 @@ export default async function PackagesPage({
   const international = packages.filter((p) => p.tripType !== "domestic");
   const domestic = packages.filter((p) => p.tripType === "domestic");
 
+  // Hero changes with the selected tab (International vs Domestic).
+  const isDomestic = type === "domestic";
+  const hero = isDomestic
+    ? {
+        eyebrow: "Explore India",
+        title: "Domestic journeys, closer to home",
+        description:
+          "Discover the beauty of India — backwaters, palaces, mountains and beaches, designed end-to-end.",
+        image:
+          "https://images.unsplash.com/photo-1598091383021-15ddea10925d?w=2000&q=80&auto=format&fit=crop",
+      }
+    : {
+        eyebrow: "Signature journeys",
+        title: "Tour packages, designed end-to-end",
+        description:
+          "Book a ready-made escape or use it as the starting point for something entirely your own.",
+        image:
+          "https://res.cloudinary.com/dzevugvgg/image/upload/v1779640599/lg-travels/site/images/1501785888041-af3ef285b470.jpg",
+      };
+
   return (
     <>
       <PageHeader
-        eyebrow="Signature journeys"
-        title="Tour packages, designed end-to-end"
-        description="Book a ready-made escape or use it as the starting point for something entirely your own."
-        image="https://res.cloudinary.com/dzevugvgg/image/upload/v1779640599/lg-travels/site/images/1501785888041-af3ef285b470.jpg"
+        eyebrow={hero.eyebrow}
+        title={hero.title}
+        description={hero.description}
+        image={hero.image}
         crumbs={[{ label: "Packages" }]}
       />
 
