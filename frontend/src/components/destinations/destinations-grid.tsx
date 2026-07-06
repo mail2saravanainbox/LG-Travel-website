@@ -5,9 +5,12 @@ import type { Continent, Destination } from "@/types";
 import { DestinationCard } from "@/components/shared/destination-card";
 import { cn } from "@/lib/utils";
 
-const FILTERS: ("All" | Continent)[] = [
+// "India" is a country-level spotlight filter (LG Travels' home market), shown
+// right after Asia; the rest filter by continent.
+const FILTERS: ("All" | "India" | Continent)[] = [
   "All",
   "Asia",
+  "India",
   "Europe",
   "Middle East",
   "Africa",
@@ -15,20 +18,21 @@ const FILTERS: ("All" | Continent)[] = [
   "Oceania",
 ];
 
+const matches = (d: Destination, f: (typeof FILTERS)[number]) =>
+  f === "All" ? true : f === "India" ? d.country === "India" : d.continent === f;
+
 export function DestinationsGrid({ destinations }: { destinations: Destination[] }) {
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("All");
-  const visible =
-    filter === "All" ? destinations : destinations.filter((d) => d.continent === filter);
+  const visible = destinations.filter((d) => matches(d, filter));
 
   return (
     <div>
       <div className="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1 pb-2">
         {FILTERS.map((f) => {
-          const count =
-            f === "All"
-              ? destinations.length
-              : destinations.filter((d) => d.continent === f).length;
-          if (f !== "All" && count === 0) return null;
+          const count = destinations.filter((d) => matches(d, f)).length;
+          // Always show All + India (India is a deliberate spotlight tab);
+          // hide continent tabs that currently have no destinations.
+          if (f !== "All" && f !== "India" && count === 0) return null;
           return (
             <button
               key={f}
