@@ -9,8 +9,8 @@ import { cn } from "@/lib/utils";
 // right after Asia; the rest filter by continent.
 const FILTERS: ("All" | "India" | Continent)[] = [
   "All",
-  "Asia",
   "India",
+  "Asia",
   "Europe",
   "Middle East",
   "Africa",

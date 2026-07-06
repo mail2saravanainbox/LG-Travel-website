@@ -21,11 +21,13 @@ export function PackagesTabs({
   domestic,
   internationalEnabled,
   initialSearch,
+  initialTab,
 }: {
   international: TourPackage[];
   domestic: TourPackage[];
   internationalEnabled: boolean;
   initialSearch?: string;
+  initialTab?: string;
 }) {
   const groups: Group[] = [];
   if (internationalEnabled) {
@@ -43,7 +45,8 @@ export function PackagesTabs({
     data: domestic,
   });
 
-  const [active, setActive] = useState(groups[0]?.id ?? "international");
+  const validInitial = groups.find((g) => g.id === initialTab)?.id;
+  const [active, setActive] = useState(validInitial ?? groups[0]?.id ?? "international");
   const current = groups.find((g) => g.id === active) ?? groups[0];
   if (!current) return null;
 
