@@ -21,7 +21,6 @@ import {
 } from "@/services/admin.service";
 import { useAdmin } from "@/store/admin";
 import { Button } from "@/components/ui/button";
-import { ImageUploader } from "@/components/admin/image-uploader";
 import { PackagesPanel } from "@/components/admin/packages-panel";
 import { BlogPanel } from "@/components/admin/blog-panel";
 import { DestinationsPanel } from "@/components/admin/destinations-panel";
@@ -37,7 +36,6 @@ type Tab =
   | "destinations"
   | "blog"
   | "testimonials"
-  | "media"
   | "settings";
 
 export default function AdminDashboard() {
@@ -166,7 +164,7 @@ export default function AdminDashboard() {
 
         {/* Tabs */}
         <div className="mt-8 flex gap-2">
-          {(["bookings", "leads", "packages", "destinations", "blog", "testimonials", "media", "settings"] as Tab[]).map((t) => (
+          {(["bookings", "leads", "packages", "destinations", "blog", "testimonials", "settings"] as Tab[]).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
@@ -202,10 +200,6 @@ export default function AdminDashboard() {
         ) : tab === "testimonials" ? (
           <div className="mt-4">
             <TestimonialsPanel />
-          </div>
-        ) : tab === "media" ? (
-          <div className="mt-4">
-            <ImageUploader />
           </div>
         ) : tab === "settings" ? (
           <div className="mt-4">
