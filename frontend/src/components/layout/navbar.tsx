@@ -31,9 +31,20 @@ export function Navbar() {
 
   useEffect(() => setOpen(false), [pathname]);
 
+  // Lock body scroll while the mobile drawer is open.
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
+
   const solid = scrolled || !overHero;
 
   return (
+    <>
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-all duration-500",
@@ -122,6 +133,7 @@ export function Navbar() {
           <Menu className="h-6 w-6" />
         </button>
       </nav>
+    </header>
 
       <AnimatePresence>
         {open && (
@@ -131,14 +143,14 @@ export function Navbar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setOpen(false)}
-              className="fixed inset-0 z-50 bg-navy-950/40 backdrop-blur-sm lg:hidden"
+              className="fixed inset-0 z-[55] bg-navy-950/50 backdrop-blur-sm lg:hidden"
             />
             <motion.div
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "tween", duration: 0.4, ease: EASE_LUX }}
-              className="fixed inset-y-0 right-0 z-50 flex w-[82%] max-w-sm flex-col bg-white p-6 shadow-2xl lg:hidden"
+              className="fixed inset-y-0 right-0 z-[60] flex w-[82%] max-w-sm flex-col overflow-y-auto bg-white p-6 shadow-2xl lg:hidden"
             >
               <div className="flex items-center justify-between">
                 <Logo />
@@ -196,6 +208,6 @@ export function Navbar() {
           </>
         )}
       </AnimatePresence>
-    </header>
+    </>
   );
 }
