@@ -64,7 +64,7 @@ export function Hero({
   }, []);
 
   return (
-    <section className="relative flex min-h-[100svh] items-center overflow-hidden">
+    <section className="relative flex items-start overflow-hidden md:min-h-[100svh] md:items-center">
       {/* Poster is painted instantly and is the only hero media on mobile /
           reduced-motion. The video mounts on top only where it's appropriate. */}
       <div
