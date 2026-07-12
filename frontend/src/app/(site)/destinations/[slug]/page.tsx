@@ -53,7 +53,7 @@ export default async function DestinationDetailPage({
 
       <section className="container-lux py-16 md:py-24">
         <div className="grid gap-12 lg:grid-cols-3">
-          <div className="lg:col-span-2">
+          <div className="min-w-0 lg:col-span-2">
             <SectionHeading
               align="left"
               eyebrow="Overview"
@@ -83,7 +83,7 @@ export default async function DestinationDetailPage({
           </div>
 
           {/* Sticky info card */}
-          <aside className="lg:col-span-1">
+          <aside className="min-w-0 lg:col-span-1">
             <div className="sticky top-24 rounded-3xl border border-navy-700/8 bg-white p-6 shadow-lift">
               <span className="text-sm text-ink/50">Trips from</span>
               <p className="font-display text-3xl font-bold text-navy-900">

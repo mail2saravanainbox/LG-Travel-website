@@ -105,7 +105,7 @@ export default async function PackageDetailPage({
 
       {/* Main content + booking */}
       <div className="container-lux grid gap-12 py-16 lg:grid-cols-3">
-        <div className="lg:col-span-2">
+        <div className="min-w-0 lg:col-span-2">
           <h2 className="font-display text-2xl font-bold text-navy-900">Trip overview</h2>
           <p className="mt-4 text-lg leading-relaxed text-ink/70">{pkg.description}</p>
 
@@ -185,7 +185,7 @@ export default async function PackageDetailPage({
           </div>
         </div>
 
-        <aside className="lg:col-span-1">
+        <aside className="min-w-0 lg:col-span-1">
           <BookingBox pkg={pkg} />
         </aside>
       </div>
