@@ -5,19 +5,13 @@ import { PageHeader } from "@/components/shared/page-header";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { Reveal, RevealGroup } from "@/components/shared/reveal";
 import { Button } from "@/components/ui/button";
+import { fetchSiteSettings } from "@/services/settings.service";
 
 export const metadata: Metadata = {
   title: "About Us",
   description:
     "LG Travels is a global luxury travel-tech brand designing cinematic, bespoke journeys with concierge-grade care.",
 };
-
-const stats = [
-  { value: "120+", label: "Destinations" },
-  { value: "18k+", label: "Journeys crafted" },
-  { value: "4.9/5", label: "Average rating" },
-  { value: "24/7", label: "Concierge care" },
-];
 
 const values = [
   { icon: Globe2, title: "Global, local roots", description: "Specialists embedded in every region, from the Gulf to the Alps to Southeast Asia." },
@@ -26,20 +20,14 @@ const values = [
   { icon: Users, title: "Human, always", description: "Technology makes us faster; people make us better. A real expert is always on call." },
 ];
 
-const team = [
-  { name: "Elena Vasquez", role: "Head of Travel Design", img: "https://i.pravatar.cc/400?img=47" },
-  { name: "Omar Haddad", role: "Middle East Specialist", img: "https://i.pravatar.cc/400?img=59" },
-  { name: "Sophie Dubois", role: "Europe Specialist", img: "https://i.pravatar.cc/400?img=25" },
-  { name: "Marcus Lee", role: "Indian Ocean Specialist", img: "https://i.pravatar.cc/400?img=14" },
-];
-
-export default function AboutPage() {
+export default async function AboutPage() {
+  const site = await fetchSiteSettings();
   return (
     <>
       <PageHeader
         eyebrow="Our story"
-        title="Luxury travel, reimagined for a global generation"
-        description="We're a travel-tech brand on a mission to make extraordinary journeys feel effortless — wherever in the world you call home."
+        title="Luxury travel, curated for you — from India to the world"
+        description="LG Travels crafts bespoke luxury journeys across India and beyond — private stays, extraordinary landscapes and concierge-grade care from the first idea to the final sunset."
         image="https://res.cloudinary.com/dzevugvgg/image/upload/v1779640593/lg-travels/site/images/1488085061387-422e29b40080.jpg"
         crumbs={[{ label: "About" }]}
       />
@@ -61,18 +49,20 @@ export default function AboutPage() {
           <SectionHeading
             align="left"
             eyebrow="Why we exist"
-            title="Born from a love of the journey, not just the destination"
+            title="Rooted in India, designed for the world"
           />
           <div className="mt-6 space-y-4 text-ink/70">
             <p>
-              LG Travels began with a simple belief: that the world&apos;s most beautiful places
-              deserve to be experienced beautifully. Not rushed, not generic — but designed with
-              intention, by people who genuinely know each place.
+              LG Travels was born from a simple belief: that a great journey should feel as
+              considered as the destination itself. From our home in Guwahati, in India&apos;s
+              beautiful Northeast, we design luxury travel that&apos;s personal rather than
+              packaged — every trip shaped around the traveller, never a template.
             </p>
             <p>
-              Today we serve travellers across the UAE, India, Europe and beyond, blending
-              specialist human expertise with seamless technology. The result is a way of
-              travelling that feels personal, cinematic and completely effortless.
+              From the Himalayas and the landscapes of India to the Maldives, Dubai, Bali and
+              beyond, our specialists pair genuine local knowledge with seamless, concierge-grade
+              planning. Handpicked stays, thoughtful details and a real person on call at every
+              step — that&apos;s what makes travelling with us feel effortless.
             </p>
           </div>
           <Button href="/packages" variant="primary" className="mt-8">
@@ -84,7 +74,9 @@ export default function AboutPage() {
       {/* Stats */}
       <section className="bg-navy-900 py-16 text-white">
         <div className="container-lux grid grid-cols-2 gap-8 md:grid-cols-4">
-          {stats.map((s) => (
+          {site.aboutStats
+            .filter((s) => s.value || s.label)
+            .map((s) => (
             <div key={s.label} className="text-center">
               <p className="font-display text-4xl font-bold text-gold-400 md:text-5xl">{s.value}</p>
               <p className="mt-2 text-sm text-white/60">{s.label}</p>
@@ -112,38 +104,6 @@ export default function AboutPage() {
             </Reveal>
           ))}
         </RevealGroup>
-      </section>
-
-      {/* Team */}
-      <section id="careers" className="bg-mist py-16 md:py-24">
-        <div className="container-lux">
-          <SectionHeading
-            eyebrow="The people"
-            title="Meet your travel designers"
-            description="A global team of specialists, each obsessed with their corner of the world."
-          />
-          <RevealGroup className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {team.map((m) => (
-              <Reveal key={m.name}>
-                <div className="group overflow-hidden rounded-3xl bg-white shadow-soft">
-                  <div className="relative aspect-square overflow-hidden">
-                    <Image
-                      src={m.img}
-                      alt={m.name}
-                      fill
-                      sizes="(max-width: 768px) 50vw, 25vw"
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="p-5">
-                    <p className="font-display text-lg font-semibold text-navy-900">{m.name}</p>
-                    <p className="text-sm text-gold-600">{m.role}</p>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
-          </RevealGroup>
-        </div>
       </section>
     </>
   );

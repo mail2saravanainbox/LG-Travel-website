@@ -32,6 +32,18 @@ export function SettingsPanel() {
   function updateHero(key: keyof SiteSettings["hero"], value: string) {
     setSettings((s) => (s ? { ...s, hero: { ...s.hero, [key]: value } } : s));
   }
+  function updateAboutStat(index: number, key: "value" | "label", value: string) {
+    setSettings((s) =>
+      s
+        ? {
+            ...s,
+            aboutStats: s.aboutStats.map((stat, i) =>
+              i === index ? { ...stat, [key]: value } : stat,
+            ),
+          }
+        : s,
+    );
+  }
 
   async function save(e: React.FormEvent) {
     e.preventDefault();
@@ -180,6 +192,31 @@ export function SettingsPanel() {
               onChange={(e) => updateHero("designerTitle", e.target.value)}
               placeholder="Plan a bespoke trip in minutes" />
           </div>
+        </div>
+      </fieldset>
+
+      <fieldset className="space-y-4">
+        <legend className="text-xs font-semibold uppercase tracking-wider text-navy-700">
+          About page — stats band
+        </legend>
+        <p className="text-xs text-ink/50">
+          The four numbers on the navy band of the About page. Leave a pair blank to hide that stat.
+        </p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {settings.aboutStats.map((stat, i) => (
+            <div key={i} className="grid grid-cols-[1fr_1.4fr] gap-3 rounded-xl border border-navy-700/10 bg-mist/40 p-3">
+              <div>
+                <Label>Number</Label>
+                <Input value={stat.value} onChange={(e) => updateAboutStat(i, "value", e.target.value)}
+                  placeholder="120+" />
+              </div>
+              <div>
+                <Label>Label</Label>
+                <Input value={stat.label} onChange={(e) => updateAboutStat(i, "label", e.target.value)}
+                  placeholder="Destinations" />
+              </div>
+            </div>
+          ))}
         </div>
       </fieldset>
 

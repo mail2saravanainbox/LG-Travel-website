@@ -42,7 +42,6 @@ export const FOOTER_LINKS = {
     { label: "About Us", href: "/about" },
     { label: "Contact", href: "/contact" },
     { label: "FAQ", href: "/faq" },
-    { label: "Careers", href: "/about#careers" },
   ],
   Legal: [
     { label: "Privacy Policy", href: "/privacy" },

@@ -31,6 +31,8 @@ export interface SiteSettings {
     trendingPrice: string;
     trendingRating: string;
   };
+  /** The four numbers shown in the stats band on the About page. */
+  aboutStats: { value: string; label: string }[];
 }
 
 /** Plain-object snapshot of the SITE constant, used as the fallback. */
@@ -55,6 +57,12 @@ const DEFAULTS: SiteSettings = {
     trendingPrice: "₹3,48,600",
     trendingRating: "4.9",
   },
+  aboutStats: [
+    { value: "120+", label: "Destinations" },
+    { value: "18k+", label: "Journeys crafted" },
+    { value: "4.9/5", label: "Average rating" },
+    { value: "24/7", label: "Concierge care" },
+  ],
 };
 
 /**
@@ -70,6 +78,10 @@ export async function fetchSiteSettings(): Promise<SiteSettings> {
       ...data,
       social: { ...DEFAULTS.social, ...(data.social ?? {}) },
       hero: { ...DEFAULTS.hero, ...(data.hero ?? {}) },
+      aboutStats:
+        Array.isArray(data.aboutStats) && data.aboutStats.length
+          ? data.aboutStats
+          : DEFAULTS.aboutStats,
     };
   } catch {
     return DEFAULTS;
