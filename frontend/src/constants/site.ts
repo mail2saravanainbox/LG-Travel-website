@@ -7,8 +7,9 @@ export const SITE = {
   url: "https://lgtravels.in",
   ogImage:
     "https://res.cloudinary.com/dzevugvgg/image/upload/v1779640600/lg-travels/site/images/1507525428034-b723cf961d3e.jpg",
-  email: "support@makevoyage.com",
-  phone: "757 808 7777",
+  email: "info@lgtravels.in",
+  // Two business numbers, shown in this order site-wide. formatPhone() adds +91.
+  phone: "7399900999, 9435148453",
   hours: "10:00 AM – 10:00 PM",
   addressLabel: "Corporate & Registered Office · LG Travels",
   address:

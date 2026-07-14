@@ -16,7 +16,7 @@ const jsonLd = {
   description: SITE.description,
   url: SITE.url,
   email: SITE.email,
-  telephone: SITE.phone,
+  telephone: `+91 ${SITE.phone.split(",")[0].trim()}`,
   address: { "@type": "PostalAddress", streetAddress: SITE.address },
   aggregateRating: {
     "@type": "AggregateRating",
