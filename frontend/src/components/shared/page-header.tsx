@@ -14,6 +14,8 @@ interface PageHeaderProps {
   eyebrow?: string;
   image?: string;
   crumbs?: Crumb[];
+  /** Optional call-to-action buttons rendered under the description. */
+  actions?: React.ReactNode;
 }
 
 const DEFAULT_IMAGE =
@@ -25,6 +27,7 @@ export function PageHeader({
   eyebrow,
   image = DEFAULT_IMAGE,
   crumbs = [],
+  actions,
 }: PageHeaderProps) {
   return (
     <section className="relative flex min-h-[52vh] items-end overflow-hidden pt-18">
@@ -67,6 +70,7 @@ export function PageHeader({
           {description && (
             <p className="mt-4 max-w-2xl text-balance text-lg text-white/75">{description}</p>
           )}
+          {actions && <div className="mt-8 flex flex-wrap gap-4">{actions}</div>}
         </Reveal>
       </div>
     </section>
