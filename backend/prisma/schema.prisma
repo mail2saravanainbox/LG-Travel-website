@@ -164,8 +164,12 @@ model Booking {
   reference  String        @unique
   user       User?         @relation(fields: [userId], references: [id])
   userId     String?
-  package    Package       @relation(fields: [packageId], references: [id])
-  packageId  String
+  // Package link is nullable so an admin can delete a booked package. On delete
+  // the link is set null and packageTitle keeps a readable snapshot of what was
+  // booked, so booking/revenue history survives.
+  package      Package?    @relation(fields: [packageId], references: [id], onDelete: SetNull)
+  packageId    String?
+  packageTitle String?
   travelers  Int           @default(1)
   startDate  DateTime?     @db.Date
   leadName   String

@@ -98,7 +98,18 @@ export function BookingsTable({
             <Fragment key={b.id}>
               <tr className="border-b border-navy-700/5 hover:bg-mist/40">
                 <td className="whitespace-nowrap px-4 py-3 font-mono text-xs text-navy-800">{b.reference}</td>
-                <td className="whitespace-nowrap px-4 py-3 text-ink/80">{b.package?.title ?? "—"}</td>
+                <td className="whitespace-nowrap px-4 py-3 text-ink/80">
+                  {b.package?.title ?? (
+                    b.packageTitle ? (
+                      <span>
+                        {b.packageTitle}{" "}
+                        <span className="text-ink/40">(deleted)</span>
+                      </span>
+                    ) : (
+                      "—"
+                    )
+                  )}
+                </td>
                 <td className="whitespace-nowrap px-4 py-3 text-ink/80">
                   {b.leadName} <span className="text-ink/40">· {b.leadEmail}</span>
                 </td>

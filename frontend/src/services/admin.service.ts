@@ -22,6 +22,8 @@ export interface AdminBooking {
   notes?: string | null;
   createdAt: string;
   package?: { title: string } | null;
+  /** Snapshot of the package name, kept if the package was later deleted. */
+  packageTitle?: string | null;
 }
 
 export type BookingStatus = "pending" | "confirmed" | "cancelled" | "completed" | "refunded";

@@ -54,7 +54,12 @@ export function PackagesPanel() {
       window.alert("Your session has expired — please sign in again.");
       return;
     }
-    if (!window.confirm(`Delete "${title}"? This cannot be undone.`)) return;
+    if (
+      !window.confirm(
+        `Delete "${title}"? Any existing bookings are kept (they'll show this package's name marked "deleted"). This cannot be undone.`,
+      )
+    )
+      return;
     setDeleting(slug);
     try {
       await adminDeletePackage(token, slug);

@@ -159,13 +159,20 @@ export class PackagesService {
       include: { _count: { select: { bookings: true } } },
     });
     if (!pkg) throw new NotFoundException(`Package "${slug}" not found`);
-    if (pkg._count.bookings > 0) {
-      throw new ConflictException(
-        `Cannot delete "${slug}" — it has ${pkg._count.bookings} booking(s). Deactivate it instead (set isActive=false) to hide it from the site.`,
-      );
-    }
-    await this.prisma.package.delete({ where: { id: pkg.id } });
-    return { deleted: true, slug };
+
+    // Force-delete: an admin can delete a package even if it has bookings. To
+    // avoid destroying booking/revenue history, snapshot the package title onto
+    // each booking and detach the link, then delete the package (its itinerary
+    // cascades; reviews are set null). Bookings survive, showing the saved name.
+    const bookings = pkg._count.bookings;
+    await this.prisma.$transaction([
+      this.prisma.booking.updateMany({
+        where: { packageId: pkg.id },
+        data: { packageId: null, packageTitle: pkg.title },
+      }),
+      this.prisma.package.delete({ where: { id: pkg.id } }),
+    ]);
+    return { deleted: true, slug, detachedBookings: bookings };
   }
 
   findAll(params: { category?: string; featured?: string; sort?: string; tripType?: string }) {
