@@ -14,10 +14,11 @@ export const SITE = {
   addressLabel: "Corporate & Registered Office · LG Travels",
   address:
     "Unit No.2, 2nd Floor, Gostalaya Building, Opp Sipani Guest House, Chatribari Road, Guwahati – 781001",
+  // Real handles; also the fallback when the settings API is unreachable.
   social: {
-    instagram: "https://instagram.com",
-    facebook: "https://facebook.com",
-    linkedin: "https://linkedin.com",
+    instagram: "https://www.instagram.com/travels.lg/",
+    facebook: "https://www.facebook.com/profile.php?id=61574317688216",
+    linkedin: "https://www.linkedin.com/in/l-g-travels-478205417/",
   },
 } as const;
 
