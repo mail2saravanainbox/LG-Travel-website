@@ -204,7 +204,7 @@ export function SettingsPanel() {
       <fieldset className="space-y-4">
         <legend className="text-xs font-semibold uppercase tracking-wider text-navy-700">Social links</legend>
         <div className="grid gap-4 sm:grid-cols-2">
-          {(["instagram", "facebook", "twitter", "linkedin", "youtube"] as const).map((key) => (
+          {(["instagram", "facebook", "linkedin"] as const).map((key) => (
             <div key={key}>
               <Label className="capitalize">{key}</Label>
               <Input value={settings.social[key]} onChange={(e) => updateSocial(key, e.target.value)}

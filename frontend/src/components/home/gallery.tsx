@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { InstagramIcon } from "@/components/shared/social-icons";
 import { SectionHeading } from "@/components/shared/section-heading";
+import { fetchSiteSettings } from "@/services/settings.service";
 
 // Hosted on Cloudinary (folder: lg-travels/site/gallery).
 const shots = [
@@ -14,7 +15,8 @@ const shots = [
   "https://res.cloudinary.com/dzevugvgg/image/upload/v1779640934/lg-travels/site/gallery/1527668752968-14dc70a27c95.jpg",
 ];
 
-export function Gallery() {
+export async function Gallery() {
+  const site = await fetchSiteSettings();
   const row = [...shots, ...shots];
   return (
     <section className="overflow-hidden py-20 md:py-28">
@@ -31,7 +33,7 @@ export function Gallery() {
           {row.map((id, i) => (
             <a
               key={i}
-              href="https://instagram.com"
+              href={site.social.instagram}
               target="_blank"
               rel="noreferrer"
               className="group relative h-56 w-56 shrink-0 overflow-hidden rounded-2xl md:h-64 md:w-64"

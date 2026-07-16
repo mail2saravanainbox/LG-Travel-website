@@ -17,9 +17,7 @@ export const SITE = {
   social: {
     instagram: "https://instagram.com",
     facebook: "https://facebook.com",
-    twitter: "https://twitter.com",
     linkedin: "https://linkedin.com",
-    youtube: "https://youtube.com",
   },
 } as const;
 

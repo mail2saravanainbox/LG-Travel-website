@@ -14,9 +14,7 @@ export interface SiteSettings {
   social: {
     instagram: string;
     facebook: string;
-    twitter: string;
     linkedin: string;
-    youtube: string;
   };
   /** When false, the public Packages page hides the International section. */
   internationalEnabled: boolean;

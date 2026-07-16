@@ -8,8 +8,6 @@ import {
   FacebookIcon,
   InstagramIcon,
   LinkedinIcon,
-  TwitterIcon,
-  YoutubeIcon,
 } from "@/components/shared/social-icons";
 
 export async function Footer() {
@@ -17,9 +15,7 @@ export async function Footer() {
   const socials = [
     { icon: InstagramIcon, href: site.social.instagram, label: "Instagram" },
     { icon: FacebookIcon, href: site.social.facebook, label: "Facebook" },
-    { icon: TwitterIcon, href: site.social.twitter, label: "Twitter" },
     { icon: LinkedinIcon, href: site.social.linkedin, label: "LinkedIn" },
-    { icon: YoutubeIcon, href: site.social.youtube, label: "YouTube" },
   ];
 
   return (
